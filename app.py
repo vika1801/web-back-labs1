@@ -145,7 +145,7 @@ def not_found(err):
             <a href="/lab1">К лабораторной работе</a>
         </div>
     </body>
-</html>
+</html> 
 ''', 404
 
 @app.route('/lab1/counter/reset')
@@ -320,3 +320,120 @@ def teapot():
     </body>
 </html>
 ''', 418
+
+@app.errorhandler(500)
+def internal_server_error(error):
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <title>500 - Ошибка сервера</title>
+        <style>
+            body {
+                font-family: 'Arial', sans-serif;
+                margin: 0;
+                padding: 0;
+                background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+                color: white;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .container {
+                text-align: center;
+                background: rgba(255, 255, 255, 0.1);
+                padding: 50px;
+                border-radius: 20px;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                max-width: 600px;
+            }
+            .error-code {
+                font-size: 120px;
+                font-weight: bold;
+                margin: 0;
+                text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+            }
+            .error-title {
+                font-size: 36px;
+                margin: 20px 0;
+                color: #fff;
+            }
+            .error-message {
+                font-size: 18px;
+                margin: 20px 0;
+                line-height: 1.6;
+                color: #ffeaea;
+            }
+            .warning-icon {
+                font-size: 80px;
+                margin: 30px 0;
+                display: block;
+            }
+            .btn {
+                display: inline-block;
+                background: white;
+                color: #ff6b6b;
+                padding: 12px 30px;
+                text-decoration: none;
+                border-radius: 50px;
+                margin: 10px;
+                font-weight: bold;
+                transition: all 0.3s ease;
+                border: 2px solid white;
+            }
+            .btn:hover {
+                background: transparent;
+                color: white;
+                transform: translateY(-3px);
+            }
+            .technical-info {
+                background: rgba(255, 255, 255, 0.1);
+                padding: 20px;
+                border-radius: 10px;
+                margin: 30px 0;
+                text-align: left;
+                font-size: 14px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="warning-icon">⚠️</div>
+            <h1 class="error-code">500</h1>
+            <h2 class="error-title">Внутренняя ошибка сервера</h2>
+            
+            <div class="error-message">
+                <p>На сервере произошла непредвиденная ошибка.</p>
+                <p>Мы уже работаем над устранением проблемы. Пожалуйста, попробуйте позже.</p>
+            </div>
+
+            <div class="technical-info">
+                <h3>Техническая информация:</h3>
+                <p>• Произошла внутренняя ошибка приложения</p>
+                <p>• Сервер не смог обработать запрос</p>
+                <p>• Администратор уведомлен о проблеме</p>
+            </div>
+
+            <div>
+                <a href="/" class="btn">🏠 На главную страницу</a>
+                <a href="javascript:history.back()" class="btn">↩️ Вернуться назад</a>
+            </div>
+
+            <div style="margin-top: 30px; font-size: 14px; color: #ffd1d1;">
+                <p>Приносим извинения за временные неудобства</p>
+            </div>
+        </div>
+    </body>
+</html>
+''', 500
+
+@app.route('/lab1/break-server')
+def break_server():
+    '''
+    Обработчик, который намеренно вызывает ошибку 500
+    Для проверки запускайте сервер без флага --debug
+    '''
+    result = 1 / 0
+    return "Этот код никогда не выполнится"
