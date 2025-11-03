@@ -62,6 +62,22 @@ def image():
     <body>
         <h1>Дуб</h1>
         <img src="''' + path + '''">
+        <div class="header-info">
+                <strong>Демонстрация HTTP-заголовков:</strong><br>
+                • Content-Language: ru<br>
+                • X-Student-Name: Sopova-Viktoria<br>
+                • X-Lab-Work: 1
+            </div>
+            
+            <img src="{path}" alt="Величественный дуб">
+            <p>Эта страница возвращает кастомные HTTP-заголовки для лабораторной работы</p>
+            
+            <div>
+                <a href="/"> На главную</a>
+                <a href="/lab1"> К лабораторной</a>
+                <a href="/lab1/author"> Об авторе</a>
+            </div>
+        </div>
     </body>
 </html>
 '''
