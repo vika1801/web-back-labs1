@@ -68,6 +68,7 @@ def counter():
         Дата и время: ''' + str(current_time) + '''<br>
         Запрошенный адрес: ''' + str(url) + '''<br>
         Ваш IP-АДРЕС: ''' + str(client_ip) + '''<br>
+        <a href="/lab1/counter/reset">Сбросить счётчик</a>
     </body>
 </html>
 '''
@@ -91,3 +92,9 @@ def created():
 @app.errorhandler(404)
 def not_found(err):
     return "нет такой страницы", 404
+
+@app.route('/lab1/counter/reset')
+def reset_counter():
+    global count
+    count = 0
+    return "Счётчик сброшен. <a href='/lab1/counter'>Вернуться к счётчику</a>"
