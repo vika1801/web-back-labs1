@@ -177,6 +177,72 @@ def lab1():
 <html>
     <head>
         <title>Лабораторная 1</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 40px;
+                background-color: #f8f9fa;
+                line-height: 1.6;
+            }
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+                background-color: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+            h1 {
+                color: #2c3e50;
+                text-align: center;
+                border-bottom: 2px solid #3498db;
+                padding-bottom: 10px;
+            }
+            p {
+                text-align: justify;
+                margin-bottom: 20px;
+                font-size: 16px;
+            }
+            .back-link {
+                display: inline-block;
+                background-color: #3498db;
+                color: white;
+                padding: 10px 20px;
+                text-decoration: none;
+                border-radius: 5px;
+               margin-bottom: 30px;
+                font-weight: bold;
+            }
+            .back-link:hover {
+                background-color: #2980b9;
+            }
+            .routes-list {
+                background-color: #f1f8ff;
+                padding: 20px;
+                border-radius: 5px;
+                margin: 20px 0;
+            }
+            .routes-list ul {
+                list-style-type: none;
+                padding: 0;
+            }
+            .routes-list li {
+                margin: 10px 0;
+                padding: 8px;
+                background: white;
+                border-radius: 4px;
+                border-left: 4px solid #3498db;
+            }
+            .routes-list a {
+                color: #2c3e50;
+                text-decoration: none;
+                font-weight: bold;
+            }
+            .routes-list a:hover {
+                color: #3498db;
+                text-decoration: underline;
+            }
+        </style>
     </head>
     <body>
         <div class="container">
@@ -190,6 +256,25 @@ def lab1():
             </div>
             
             <a href="/" class="back-link">Вернуться на главную страницу</a>
+            <h2>Список роутов</h2>
+            <div class="routes-list">
+                <ul>
+                    <li><a href="/">Главная страница</a> (/)</li>
+                    <li><a href="/index">Главная страница</a> (/index)</li>
+                    <li><a href="/lab1/web">Страница Web</a> (/lab1/web)</li>
+                    <li><a href="/lab1/author">Информация об авторе</a> (/lab1/author)</li>
+                    <li><a href="/lab1/image">Картинка дуба</a> (/lab1/image)</li>
+                    <li><a href="/lab1/counter">Счётчик посещений</a> (/lab1/counter)</li>
+                    <li><a href="/lab1/info">Тест перенаправления</a> (/lab1/info)</li>
+                    <li><a href="/lab1/reset">Сброс счётчика</a> (/lab1/reset)</li>
+                    <li><a href="/lab1/400">400 - Bad Request</a> (/lab1/400)</li>
+                    <li><a href="/lab1/401">401 - Unauthorized</a> (/lab1/401)</li>
+                    <li><a href="/lab1/402">402 - Payment Required</a> (/lab1/402)</li>
+                    <li><a href="/lab1/403">403 - Forbidden</a> (/lab1/403)</li>
+                    <li><a href="/lab1/405">405 - Method Not Allowed</a> (/lab1/405)</li>
+                    <li><a href="/lab1/418">418 - I'm a teapot</a> (/lab1/418)</li>
+                    <li><a href="/lab1/break-server">Тест ошибки 500</a> (/lab1/break-server)</li>
+                </ul>
         </div>
     </body>
 </html>
