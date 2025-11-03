@@ -11,7 +11,10 @@ def start():
         "       <h1>web-сервер на flask</h1>" \
                 <a href="/lab1/author">Перейти к информации об авторе</a>
         "   </body>" \
-        "</html>"""
+        "</html>""", 200, {
+            'X-Server': 'sample',
+            'Content-Type': 'text/plain; charset=utf-8'
+        }
 
 @app.route("/lab1/author")
 def author():
