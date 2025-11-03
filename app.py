@@ -115,3 +115,28 @@ def reset_counter():
     global count
     count = 0
     return "Счётчик сброшен. <a href='/lab1/counter'>Вернуться к счётчику</a>"
+
+@app.route("/lab1")
+def lab1():
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <title>Лабораторная 1</title>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Лабораторная работа 1</h1>
+            
+            <div class="description">
+                <p>Flask — фреймворк для создания веб-приложений на языке программирования Python, 
+                использующий набор инструментов Werkzeug, а также шаблонизатор Jinja2. 
+                Относится к категории так называемых микрофреймворков — минималистичных 
+                каркасов веб-приложений, сознательно предоставляющих лишь самые базовые возможности.</p>
+            </div>
+            
+            <a href="/" class="back-link">Вернуться на главную страницу</a>
+        </div>
+    </body>
+</html>
+'''
