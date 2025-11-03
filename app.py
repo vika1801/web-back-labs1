@@ -108,7 +108,45 @@ def created():
 
 @app.errorhandler(404)
 def not_found(err):
-    return "нет такой страницы", 404
+    css_url = url_for('static', filename='lab1.css')
+    image_url = url_for('static', filename='error.jpg')
+    
+    return f'''
+<!doctype html>
+<html>
+    <head>
+        <title>404 - Страница не найдена</title>
+        <link rel="stylesheet" href="{css_url}">
+        <style>
+            .error-container {{
+                text-align: center;
+                padding: 50px;
+            }}
+            .error-image {{
+                max-width: 400px;
+                height: auto;
+                margin: 20px 0;
+            }}
+            .error-message {{
+                color: #d9534f;
+                font-size: 24px;
+                margin: 20px 0;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="error-container">
+            <h1>404 - Страница не найдена</h1>
+            <div class="error-message">нет такой страницы</div>
+            <img src="{image_url}" alt="Ошибка 404" class="error-image">
+            <br>
+            <a href="/">Вернуться на главную</a>
+            <br>
+            <a href="/lab1">К лабораторной работе</a>
+        </div>
+    </body>
+</html>
+''', 404
 
 @app.route('/lab1/counter/reset')
 def reset_counter():
