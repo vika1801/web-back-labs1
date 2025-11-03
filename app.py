@@ -140,3 +140,145 @@ def lab1():
     </body>
 </html>
 '''
+
+@app.route('/lab1/400')
+def bad_request():
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <title>400 - Bad Request</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; }
+            .error { color: #d9534f; background: #f8d7da; padding: 20px; border-radius: 5px; }
+        </style>
+    </head>
+    <body>
+        <div class="error">
+            <h1>400 - Bad Request</h1>
+            <p>Неверный запрос. Сервер не может обработать запрос из-за синтаксической ошибки.</p>
+        </div>
+        <a href="/">На главную</a> | 
+        <a href="/lab1">К лабораторной</a>
+    </body>
+</html>
+''', 400
+
+@app.route('/lab1/401')
+def unauthorized():
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <title>401 - Unauthorized</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; }
+            .error { color: #856404; background: #fff3cd; padding: 20px; border-radius: 5px; }
+        </style>
+    </head>
+    <body>
+        <div class="error">
+            <h1>401 - Unauthorized</h1>
+            <p>Требуется аутентификация. Для доступа к ресурсу необходима авторизация.</p>
+        </div>
+        <a href="/">На главную</a> | 
+        <a href="/lab1">К лабораторной</a>
+    </body>
+</html>
+''', 401
+
+@app.route('/lab1/402')
+def payment_required():
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <title>402 - Payment Required</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; }
+            .error { color: #0c5460; background: #d1ecf1; padding: 20px; border-radius: 5px; }
+        </style>
+    </head>
+    <body>
+        <div class="error">
+            <h1>402 - Payment Required</h1>
+            <p>Необходима оплата. Этот код был зарезервирован для использования в системах цифровых платежей.</p>
+            <p>В настоящее время он редко используется, но был определён для будущего применения.</p>
+        </div>
+        <a href="/">На главную</a> | 
+        <a href="/lab1">К лабораторной</a>
+    </body>
+</html>
+''', 402
+
+@app.route('/lab1/403')
+def forbidden():
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <title>403 - Forbidden</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; }
+            .error { color: #721c24; background: #f8d7da; padding: 20px; border-radius: 5px; }
+        </style>
+    </head>
+    <body>
+        <div class="error">
+            <h1>403 - Forbidden</h1>
+            <p>Доступ запрещен. У вас нет прав для доступа к этому ресурсу.</p>
+        </div>
+        <a href="/">На главную</a> | 
+        <a href="/lab1">К лабораторной</a>
+    </body>
+</html>
+''', 403
+
+@app.route('/lab1/405')
+def method_not_allowed():
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <title>405 - Method Not Allowed</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; }
+            .error { color: #155724; background: #d4edda; padding: 20px; border-radius: 5px; }
+        </style>
+    </head>
+    <body>
+        <div class="error">
+            <h1>405 - Method Not Allowed</h1>
+            <p>Метод не разрешен. Использованный метод HTTP не поддерживается для данного ресурса.</p>
+        </div>
+        <a href="/">На главную</a> | 
+        <a href="/lab1">К лабораторной</a>
+    </body>
+</html>
+''', 405
+
+@app.route('/lab1/418')
+def teapot():
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <title>418 - I'm a teapot</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }
+            .teapot { color: #8B4513; background: #FFF8DC; padding: 30px; border-radius: 10px; }
+            .teapot-img { font-size: 50px; margin: 20px; }
+        </style>
+    </head>
+    <body>
+        <div class="teapot">
+            <div class="teapot-img">🫖</div>
+            <h1>418 - I'm a teapot</h1>
+            <p>Я - чайник! Этот код был введен как апрельская шутка в 1998 году.</p>
+            <p>Сервер отказывается варить кофе, потому что он - заварочный чайник.</p>
+        </div>
+        <a href="/">На главную</a> | 
+        <a href="/lab1">К лабораторной</a>
+    </body>
+</html>
+''', 418
