@@ -160,6 +160,7 @@ def not_found(err):
             <br>
             <a href="/lab1">К лабораторной работе</a>
         </div>
+        <div class="info-item">
     </body>
 </html> 
 ''', 404
@@ -538,3 +539,13 @@ def break_server():
     '''
     result = 1 / 0
     return "Этот код никогда не выполнится"
+
+@app.route('/lab2/a/')
+def a():
+    return 'ok'
+
+flower_list = ('роза', 'тюльпан', 'незабудка', 'ромашка')
+
+@app.route('/lab2/flowers/<int:flower_id>')
+def flowers(flower_id):
+    return "цветок: " + flower_id
