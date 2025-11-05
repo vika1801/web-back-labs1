@@ -548,4 +548,8 @@ flower_list = ('роза', 'тюльпан', 'незабудка', 'ромашк
 
 @app.route('/lab2/flowers/<int:flower_id>')
 def flowers(flower_id):
-    return "цветок: " + flower_id
+    if flower_id > 3:
+        return "такого цветка нет", 404
+    else:
+        return "цветок: " + flower_list[flower_id]
+    
