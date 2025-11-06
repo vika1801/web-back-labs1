@@ -1,0 +1,13 @@
+img {
+    border: 3px solid #2e8b57;
+    border-radius: 10px;
+    display: block;
+    margin: 0 auto;
+    max-width: 500px;
+    height: auto;
+}
+
+h1 {
+    color: #2e8b57;
+    text-align: center;
+}
