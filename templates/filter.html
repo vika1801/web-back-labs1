@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{# номер лабораторной работы: #}
+{% block lab %}Лабораторная работа 2{% endblock %}
+
+{# основной контент: #}
+{% block main %}
+    <div>Фраза: {{ phrase }}</div>
+    <div>Фраза: {{ phrase | title }}</div>
+    <div>Фраза: {{ phrase | striptags }}</div>
+    <div>Фраза: {{ phrase | safe }} </div>
+    <div>Фраза: {{ phrase | striptags | replace('сколько', 'много')
+        | replace('нам', 'тут') | upper }}</div>
+    <h2>Комбинации фильтров:</h2>
+    <div>Фраза: {{ phrase | striptags | replace('сколько', 'много') | replace('нам', 'тут') | upper }}</div>
+    
+    <h2>Задание: striptags + reverse</h2>
+    <div>striptags + reverse: {{ phrase | striptags | reverse }}</div>
+    
+    <h2>Другие полезные фильтры:</h2>
+    <div>Длина фразы: {{ phrase | length }} символов</div>
+    <div>В верхнем регистре: {{ phrase | upper }}</div>
+    <div>В нижнем регистре: {{ phrase | lower }}</div>
+    <div>Capitalize: {{ phrase | capitalize }}</div>
+    <div>Reverse: {{ phrase | reverse }}</div>
+    <h2>Ссылка на документацию:</h2>
+    <div>
+        Полный список фильтров можно посмотреть на сайте Jinja:
+        <a href="https://jinja.palletsprojects.com/en/3.0.x/templates/#builtin-filters" target="_blank">
+            https://jinja.palletsprojects.com/en/3.0.x/templates/#builtin-filters
+        </a>
+    </div>
+{% endblock %}
