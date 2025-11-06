@@ -17,11 +17,14 @@
             <input type="number" id="font_size" name="font_size" value="{{ font_size or '18' }}"> px
         </div>
         <div>
-            <label for="bg_color">Выберите цвет фона:</label>
+            <label for="background_color">Выберите цвет фона:</label>
             <input type="color" id="background_color" name="background_color" value="{{ background_color or 'white' }}">
         </div>
         <div>
             <button type="submit">OK</button>
+        </div>
+        <div>
+            <a href="/lab3/clear">Очистить</a>
         </div>
     </form>
 {% endblock %}

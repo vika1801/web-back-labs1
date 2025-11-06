@@ -131,3 +131,12 @@ def train():
                                travel_date=travel_date)
 
     return render_template('lab3/train.html')
+
+
+@lab3.route('/lab3/clear')
+def clear():
+    resp = make_response(redirect('/lab3/settings'))
+    resp.delete_cookie('color')
+    resp.delete_cookie('background_color')
+    resp.delete_cookie('font_size')
+    return resp
