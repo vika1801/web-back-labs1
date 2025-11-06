@@ -5,30 +5,30 @@ lab1 = Blueprint('lab1', __name__)
 @lab1.route("/lab1/web")
 def web():
     return """
-    <!doctype html>
-        <html>
-            <head>
-                <title>HTTP, ФБ, Лабораторные работы</title>
-            </head>
-            <body>
-                <header>
-                    <h1>HTTP, ФБ, WEB-программирование, часть 2. Список лабораторных</h1>
-                </header>
-                <nav>
-                    <ul>
-                        <li><a href="/lab1">Первая лабораторная</a></li>
-                    </ul>
-                </nav>
-               <h1>web-сервер на flask</h1>
-               <a href="/author">author</a>
-               <footer>
-                    <p>ФИО: Сопова Виктория Андреевна</p>
-                    <p>Группа: ФБИ-31</p>
-                    <p>Курс: 3</p>
-                    <p>Год: 2025</p>
-            </footer>
-            </body>
-        </html>
+        <!doctype html>
+            <html>
+                <head>
+                    <title>HTTP, ФБ, Лабораторные работы</title>
+                </head>
+                <body>
+                    <header>
+                        <h1>HTTP, ФБ, WEB-программирование, часть 2. Список лабораторных</h1>
+                    </header>
+                    <nav>
+                        <ul>
+                            <li><a href="/lab1">Первая лабораторная</a></li>
+                        </ul>
+                    </nav>
+                <h1>web-сервер на flask</h1>
+                <a href="/author">author</a>
+                <footer>
+                        <p>ФИО: Сопова Виктория Андреевна</p>
+                        <p>Группа: ФБИ-31</p>
+                        <p>Курс: 3</p>
+                        <p>Год: 2025</p>
+                </footer>
+                </body>
+            </html>
         """, 200, {
             'X-Server': 'sample',
             'Content-Type': 'text/plain; charset=utf-8'
@@ -56,8 +56,8 @@ def author():
 
 @lab1.route('/lab1/image')
 def image():
-    path = url_for("static", filename="oak.jpg")
-    css_url = url_for('static', filename='lab1.css')
+    path = url_for("static", filename="lab1/oak.jpg")
+    css_url = url_for('static', filename='lab1/lab1.css')
     return """
         <!doctype html>
         <html>

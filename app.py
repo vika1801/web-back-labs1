@@ -14,10 +14,10 @@ app.register_blueprint(lab3)
 @app.route("/")
 @app.route('/index')
 def start():
-    css_url = url_for('static', filename='main.css')
-    favicon_ico_url = url_for('static', filename='favicon.ico')
-    favicon_32_url = url_for('static', filename='favicon-32x32.png')
-    favicon_16_url = url_for('static', filename='favicon-16x16.png')
+    css_url = url_for('static', filename='lab1/main.css')
+    favicon_ico_url = url_for('static', filename='lab2/favicon.ico')
+    favicon_32_url = url_for('static', filename='lab2/favicon-32x32.png')
+    favicon_16_url = url_for('static', filename='lab2/favicon-16x16.png')
     return f"""
         <!doctype html>
         <html>
@@ -58,8 +58,8 @@ def start():
 
 @app.errorhandler(404)
 def not_found(err):
-    css_url = url_for('static', filename='lab1.css')
-    image_url = url_for('static', filename='error.jpg')
+    css_url = url_for('static', filename='lab1/lab1.css')
+    image_url = url_for('static', filename='lab1/error.jpg')
     
     return f"""
         <!doctype html>
