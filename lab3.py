@@ -91,3 +91,43 @@ def settings():
         background_color = request.cookies.get('background_color', 'white')
         resp = make_response(render_template('lab3/settings.html',color=color,font_size=font_size,background_color=background_color))
         return resp
+
+
+@lab3.route('/lab3/train_ticket')
+def train():
+    errors={}
+    pass_name = request.args.get('pass_name')
+    shelf = request.args.get('shelf')
+    with_bed = request.args.get('with_bed')
+    with_luggage = request.args.get('with_luggage')
+    age = request.args.get('age')
+    from_t = request.args.get('from_t')
+    to_t = request.args.get('to_t')
+    travel_date = request.args.get('travel_date')
+    insurance = request.args.get('insurance')
+
+    if pass_name and shelf and age and from_t and to_t and travel_date:
+        age = int(age)
+        
+        ticket_price = 1000 if age >= 18 else 700  
+
+        if shelf in ['low', 'low_side']:
+            ticket_price += 100
+        if with_bed == 'on':
+            ticket_price += 75
+        if with_luggage == 'on':
+            ticket_price += 250
+        if insurance == 'on':
+            ticket_price += 150
+
+        ticket_type = "Детский билет" if age < 18 else "Взрослый билет"
+
+        return render_template('lab3/ticket.html', 
+                               pass_name=pass_name, 
+                               ticket_type=ticket_type,
+                               ticket_price=ticket_price,
+                               from_t=from_t,
+                               to_t=to_t,
+                               travel_date=travel_date)
+
+    return render_template('lab3/train.html')
