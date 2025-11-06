@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Все цветы</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body>
+    <h1>Список всех цветов</h1>
+    <p>Всего цветов: {{ flowers|length }}</p>
+    <ul>
+        {% for flower in flowers %}
+        <li>{{ flower }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/lab2/">Назад к лабораторной</a>
+</body>
+</html>

@@ -571,8 +571,57 @@ def add_flower(name):
 @app.route('/lab2/example/')
 def example():
     name, lab_num, group, course = 'Вика Сопова', 2, 'ФБИ-31', 3
-    fruits = ['яблоки', 'груши', 'апельсины', 'мандарины', 'манго']
+    fruits = [
+        {'name': 'яблоки', 'price': 100},
+        {'name': 'груши', 'price': 120},
+        {'name': 'апельсины', 'price': 80},
+        {'name': 'мандарины', 'price': 95},
+        {'name': 'манго', 'price': 321}
+    ]
     return render_template('example.html',
                            name=name, lab_num=lab_num, group=group,
                            course=course, fruits=fruits)
+
+@app.route('/lab2/')
+def lab2():
+    return render_template('lab.html')
+
+@app.route('/lab2/filters')
+def filters():
+    phrase = "О <b>сколько</b> <u>нам</u> <i>открытий</i> чудных..."
+    return render_template('filter.html', phrase = phrase)
+
+@app.route('/lab2/add_flower/')
+def add_flower_empty():
+    return "Вы не задали имя цветка", 400
+
+@app.route('/lab2/flowers/')
+def all_flowers():
+    return render_template('flowers.html', flowers=flower_list)
+
+@app.route('/lab2/flowers/<int:flower_id>')
+def flowers(flower_id):
+    if flower_id >= len(flower_list):
+        abort(404)
+    return render_template('flower_id.html', flower_id=flower_id, flower=flower_list[flower_id])
+
+@app.route('/lab2/clear_flowers')
+def clear_flowers():
+    flower_list.clear()
+    return redirect('/lab2/flowers/')
+
+@app.route('/lab2/calc/<int:a>/<int:b>')
+def calc(a, b):
+    return render_template('calc.html', a=a, b=b)
+
+@app.route('/lab2/calc/')
+def calc_default():
+    return redirect('/lab2/calc/1/1')
+
+@app.route('/lab2/calc/<int:a>')
+def calc_single(a):
+    return redirect(f'/lab2/calc/{a}/1')
+
+
+
 

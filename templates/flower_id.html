@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Цветок {{ flower_id }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body>
+    <h1>Информация о цветке</h1>
+    <p>Номер цветка: {{ flower_id }}</p>
+    <p>Название: {{ flower }}</p>
+    <a href="/lab2/flowers/">Посмотреть все цветы</a><br>
+    <a href="/lab2/">Назад к лабораторной</a>
+</body>
+</html>
