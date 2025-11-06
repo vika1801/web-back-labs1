@@ -23,3 +23,77 @@ def div():
       x2 = int(x2)
       result = x1 / x2
       return render_template('lab4/div.html', x1=x1, x2=x2, result=result)
+
+
+@lab4.route('/lab4/summa-form')
+def summa_form():
+      return render_template('lab4/summa-form.html')
+
+
+@lab4.route('/lab4/summa', methods=['POST'])
+def summa():
+      x1 = request.form.get('x1')
+      x2 = request.form.get('x2')
+      if x1 == '' :
+            x1 = 0
+      if x2 == '':
+            x2 = 0
+      x1 = int(x1)
+      x2 = int(x2)
+      result = x1 + x2
+      return render_template('lab4/summa.html', x1=x1, x2=x2, result=result)
+
+
+@lab4.route('/lab4/stepen-form')
+def stepen_form():
+      return render_template('lab4/stepen-form.html')
+
+
+@lab4.route('/lab4/stepen', methods=['POST'])
+def stepen():
+      x1 = request.form.get('x1')
+      x2 = request.form.get('x2')
+      if x1 == '' or x2 == '':
+        return render_template('lab4/stepen.html', error='Оба поля должны быть заполнены!')
+      if x1 == '0' and x2 == '0':
+        return render_template('lab4/stepen.html', error='Поля не должны быть равны нулю!')
+      x1 = int(x1)
+      x2 = int(x2)
+      result = x1 ** x2
+      return render_template('lab4/stepen.html', x1=x1, x2=x2, result=result)
+
+
+@lab4.route('/lab4/razn-form')
+def razn_form():
+      return render_template('lab4/razn-form.html')
+
+
+@lab4.route('/lab4/razn', methods=['POST'])
+def razn():
+      x1 = request.form.get('x1')
+      x2 = request.form.get('x2')
+      if x1 == '' or x2 == '':
+        return render_template('lab4/razn.html', error='Оба поля должны быть заполнены!')
+      x1 = int(x1)
+      x2 = int(x2)
+      result = x1 - x2
+      return render_template('lab4/razn.html', x1=x1, x2=x2, result=result)
+
+
+@lab4.route('/lab4/mult-form')
+def mult_form():
+      return render_template('lab4/mult-form.html')
+
+
+@lab4.route('/lab4/mult', methods=['POST'])
+def mult():
+      x1 = request.form.get('x1')
+      x2 = request.form.get('x2')
+      if x1 == '':
+           x1 = 1
+      if x2 == '':
+           x2 = 1 
+      x1 = int(x1)
+      x2 = int(x2)
+      result = x1 * x2
+      return render_template('lab4/mult.html', x1=x1, x2=x2, result=result)

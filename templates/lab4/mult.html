@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{# номер лабораторной работы: #}
+{% block lab %}Лабораторная работа 4{% endblock %}
+
+{# основной контент: #}
+{% block main %}
+    {% if error %}
+        {{error}}
+        <br><br>
+        <a href="/lab4/mult-form">Вернуться к форме</a>
+    {% else %}
+    <h1>Умножение чисел</h1>
+    {{x1}} * {{x2}} = {{result}}
+    <br> <br>
+    <a href="/lab4/mult-form">Вернуться к форме</a>
+    {% endif %}
+{% endblock %}
