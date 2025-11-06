@@ -196,3 +196,61 @@ def fridge():
         snow = 1 
     
     return render_template('lab4/fridge.html', phraze=phraze, snow=snow)
+
+
+seeds_list = {
+    'barley': {'name': 'ячмень', 'price': 12000},
+    'oats': {'name': 'овёс', 'price': 8500},
+    'wheat': {'name': 'пшеница', 'price': 9000},
+    'rye': {'name': 'рожь', 'price': 15000}
+}
+
+@lab4.route('/lab4/seed', methods=['GET', 'POST'])
+def seed():
+    if request.method == 'POST':
+        seed = request.form.get('seed')
+        weight = request.form.get('weight')
+        
+        if not seed:
+            error = "Ошибка: выберите зерно"
+            return render_template('lab4/seed.html', error=error)
+        
+        if not weight:
+            error = "Ошибка: укажите вес заказа"
+            return render_template('lab4/seed.html', error=error)
+        
+        try:
+            weight = float(weight)
+        except ValueError:
+            error = "Ошибка: вес должен быть числом"
+            return render_template('lab4/seed.html', error=error)
+        
+        if weight <= 0:
+            error = "Ошибка: вес должен быть больше 0"
+            return render_template('lab4/seed.html', error=error)
+        
+        if weight > 100:
+            error = "Ошибка: такого объёма нет в наличии"
+            return render_template('lab4/seed.html', error=error)
+        
+        seed_data = seeds_list.get(seed)
+        seed_name_ru = seed_data['name']
+        price_per_ton = seed_data['price']
+        
+        total_price = weight * price_per_ton
+        discount_applied = False
+        discount_message = None
+        
+        if weight > 10:
+            discount = 0.1 
+            total_price *= (1 - discount)
+            discount_applied = True
+            discount_message = "Применена скидка 10% за большой объём"
+        
+        success_message = f"Заказ успешно сформирован. Вы заказали {seed_name_ru}. Вес: {weight} т. Сумма к оплате: {total_price:.0f} руб."
+        
+        return render_template('lab4/seed.html', 
+                             success_message=success_message, 
+                             discount_message=discount_message)
+    
+    return render_template('lab4/seed.html')

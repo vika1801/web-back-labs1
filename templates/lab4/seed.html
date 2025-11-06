@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block lab %}Заказ зерна{% endblock %}
+
+{% block main %}
+    <h1>Заказ зерна</h1>
+    <form method="POST">
+        <div>
+            <label for="seed">Выберите зерно:</label>
+            <select name="seed" id="seed" required>
+                <option value="">-- Выберите зерно --</option>
+                <option value="barley">Ячмень</option>
+                <option value="oats">Овёс</option>
+                <option value="wheat">Пшеница</option>
+                <option value="rye">Рожь</option>
+            </select>
+        </div>
+        <br>
+        <div>
+            <label for="weight">Введите вес (в тоннах):</label>
+            <input type="number" name="weight" id="weight" min="0.1" step="0.1" required>
+        </div>
+        <br>
+        <button type="submit">Оформить заказ</button>
+    </form>
+    
+    {% if error %}
+        <div style="color: red; font-weight: bold; margin-top: 15px;">{{ error }}</div>
+    {% endif %}
+    
+    {% if success_message %}
+        <div style="color: green; font-weight: bold; margin-top: 15px;">{{ success_message }}</div>
+    {% endif %}
+    
+    {% if discount_message %}
+        <div style="color: blue; font-weight: bold; margin-top: 10px;">{{ discount_message }}</div>
+    {% endif %}
+{% endblock %}
