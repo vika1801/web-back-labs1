@@ -14,10 +14,18 @@ app.register_blueprint(lab3)
 @app.route("/")
 @app.route('/index')
 def start():
-        return """
+    css_url = url_for('static', filename='main.css')
+    favicon_ico_url = url_for('static', filename='favicon.ico')
+    favicon_32_url = url_for('static', filename='favicon-32x32.png')
+    favicon_16_url = url_for('static', filename='favicon-16x16.png')
+    return f"""
         <!doctype html>
         <html>
             <head>
+                <link rel="stylesheet" href="{css_url}">
+                <link rel="icon" href="{favicon_ico_url}" type="image/x-icon">
+                <link rel="icon" href="{favicon_32_url}">
+                <link rel="icon" href="{favicon_16_url}">
                 <title>HTTP, ФБ, Лабораторные работы</title>
             </head>
             <body>
