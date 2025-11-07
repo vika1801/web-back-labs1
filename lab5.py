@@ -81,6 +81,19 @@ def list():
     return "list"
 
 
-@lab5.route('/lab5/create')
+@lab5.route('/lab5/create', methods=['GET', 'POST'])
 def create():
-    return "create"
+    login = session.get('login')
+    if not login:
+        return render_template('lab5/login.html')
+    if request.method == 'GET':
+        return render_template('lab5/create_article.html')
+    
+    title = request.form.get('title')
+    article_text = request.form.get('article_text')
+    conn, cur = db_connect()
+    cur.execute('SELECT * FROM users WHERE login=%s;', (login, ))
+    user_id = cur.fetchone()['id']
+    cur.execute(f"INSERT INTO articles (user_id, title, article_text) VALUES ('{user_id}', '{title}', '{article_text}')")
+    db_close(conn, cur)
+    return redirect ('/lab5')
