@@ -25,6 +25,11 @@
             </div>
             <div class="block2">
                 {{ login if login else 'Anonymous' }}
+                {% if login %}
+                <div>
+                    <a href="/lab5/logout" style="color: white;">Выйти</a>
+                </div>
+                {% endif %}
             </div>
         </div>
     </section>

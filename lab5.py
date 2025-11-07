@@ -115,6 +115,8 @@ def list():
 
     articles = cur.fetchall()
     db_close(conn, cur)
+    if not articles:
+        return render_template ('/lab5/articles.html', articles=articles, error='У вас нет статьи')
     return render_template ('/lab5/articles.html', articles=articles)
 
 
@@ -128,12 +130,14 @@ def create():
     
     title = request.form.get('title')
     article_text = request.form.get('article_text')
+    if not title or not article_text:  
+            return render_template('lab5/create_article.html', error='Все поля должны быть заполнены!')
     conn, cur = db_connect()
     
     if current_app.config['DB_TYPE'] == 'postgres':
-        cur.execute('SELECT login FROM users WHERE login=%s;', (login, ))
+        cur.execute('SELECT id FROM users WHERE login=%s;', (login, ))
     else:
-        cur.execute('SELECT login FROM users WHERE login=?;', (login, ))
+        cur.execute('SELECT id FROM users WHERE login=?;', (login, ))
     user_id = cur.fetchone()['id']
     
     if current_app.config['DB_TYPE'] == 'postgres':
@@ -142,3 +146,63 @@ def create():
         cur.execute("INSERT INTO articles (user_id, title, article_text) VALUES (?, ?, ?);", (user_id, title, article_text))
     db_close(conn, cur)
     return redirect ('/lab5')
+
+
+@lab5.route('/lab5/edit/<int:article_id>', methods=['GET', 'POST'])
+def edit(article_id):
+    login = session.get('login')
+    if not login:
+        return redirect('/lab5/login')
+    conn, cur = db_connect()
+ 
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT * FROM articles WHERE id=%s;", (article_id,))
+    else:
+        cur.execute("SELECT * FROM articles WHERE id=?;", (article_id,))
+    article = cur.fetchone()
+    db_close(conn, cur)
+    if not article:
+        return render_template('lab5/articles.html', message='Статья не найдена.')
+    if request.method == 'GET':
+        return render_template('lab5/edit_article.html', article=article)
+    
+    title = request.form.get('title')
+    article_text = request.form.get('article_text')
+    if not title or not article_text:
+        return render_template('lab5/edit_article.html', article=article, error='Заполните все поля')
+    conn, cur = db_connect()
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("UPDATE articles SET title=%s, article_text=%s WHERE id=%s;", (title, article_text, article_id))
+    else:
+        cur.execute("UPDATE articles SET title=?, article_text=? WHERE id=?;", (title, article_text, article_id))
+    db_close(conn, cur)
+    return redirect('/lab5/list')
+
+
+@lab5.route('/lab5/delete/<int:article_id>', methods=['GET', 'POST'])
+def delete(article_id):
+    login = session.get('login')
+    if not login:
+        return redirect('/lab5/login')
+    conn, cur = db_connect()
+    if request.method == 'GET':
+
+        query = "SELECT * FROM articles WHERE id = %s;" if current_app.config['DB_TYPE'] == 'postgres' else "SELECT * FROM articles WHERE id = ?;"
+        cur.execute(query, (article_id,))
+        article = cur.fetchone()
+        
+        if article is None:
+            db_close(conn, cur)
+            return redirect('/lab5/list')
+        return render_template('lab5/delete_article.html', article=article)
+
+    delete_query = "DELETE FROM articles WHERE id = %s;" if current_app.config['DB_TYPE'] == 'postgres' else "DELETE FROM articles WHERE id = ?;"
+    cur.execute(delete_query, (article_id,))
+    db_close(conn, cur)
+    return redirect('/lab5/list')
+
+
+@lab5.route('/lab5/logout')
+def logout():
+    session.pop('login', None) 
+    return redirect('/lab5/login')
