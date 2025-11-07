@@ -24,7 +24,7 @@
                 </div>
             </div>
             <div class="block2">
-                {{ login or 'Anonymous' }}
+                {{ login if login else 'Anonymous' }}
             </div>
         </div>
     </section>
