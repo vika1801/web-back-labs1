@@ -1,4 +1,5 @@
-from flask import Blueprint, redirect, url_for, render_template
+from flask import Blueprint, redirect, url_for, render_template, request
+import datetime 
 lab1 = Blueprint('lab1', __name__)
 
 
@@ -20,7 +21,7 @@ def web():
                         </ul>
                     </nav>
                 <h1>web-сервер на flask</h1>
-                <a href="/author">author</a>
+                <a href="/lab1/author">author</a>
                 <footer>
                         <p>ФИО: Сопова Виктория Андреевна</p>
                         <p>Группа: ФБИ-31</p>
@@ -33,7 +34,6 @@ def web():
             'X-Server': 'sample',
             'Content-Type': 'text/plain; charset=utf-8'
         }
-
 
 @lab1.route("/lab1/author")
 def author():
@@ -58,7 +58,7 @@ def author():
 def image():
     path = url_for("static", filename="lab1/oak.jpg")
     css_url = url_for('static', filename='lab1/lab1.css')
-    return """
+    return f"""
         <!doctype html>
         <html>
             <head>
@@ -66,7 +66,6 @@ def image():
             </head>
             <body>
                 <h1>Дуб</h1>
-                <img src="''' + path + '''">
                 <div class="header-info">
                         <strong>Демонстрация HTTP-заголовков:</strong><br>
                         • Content-Language: ru<br>
@@ -101,11 +100,11 @@ def counter():
         <!doctype html>
         <html>
             <body>
-                Сколько раз вы сюда заходили: ''' + str (count) + '''
+                Сколько раз вы сюда заходили: """ + str (count) + """
                 <hr>
-                Дата и время: ''' + str(current_time) + '''<br>
-                Запрошенный адрес: ''' + str(url) + '''<br>
-                Ваш IP-АДРЕС: ''' + str(client_ip) + '''<br>
+                Дата и время: """ + str(current_time) + """<br>
+                Запрошенный адрес: """ + str(url) + """<br>
+                Ваш IP-АДРЕС: """ + str(client_ip) + """<br>
                 <a href="/lab1/counter/reset">Сбросить счётчик</a>
             </body>
         </html>
@@ -233,7 +232,7 @@ def lab():
                             <li><a href="/lab1/image">Картинка дуба</a> (/lab1/image)</li>
                             <li><a href="/lab1/counter">Счётчик посещений</a> (/lab1/counter)</li>
                             <li><a href="/lab1/info">Тест перенаправления</a> (/lab1/info)</li>
-                            <li><a href="/lab1/reset">Сброс счётчика</a> (/lab1/reset)</li>
+                            <li><a href="/lab1/counter/reset">Сброс счётчика</a> (/lab1/reset)</li>
                             <li><a href="/lab1/400">400 - Bad Request</a> (/lab1/400)</li>
                             <li><a href="/lab1/401">401 - Unauthorized</a> (/lab1/401)</li>
                             <li><a href="/lab1/402">402 - Payment Required</a> (/lab1/402)</li>
