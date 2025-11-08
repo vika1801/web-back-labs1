@@ -58,7 +58,7 @@ def start():
                     </ul>
                 </nav>
                <h1>web-сервер на flask</h1>
-               <a href="/author">author</a>
+               <a href="lab1/author">author</a>
                <footer>
                     <p>ФИО: Сопова Виктория Андреевна</p>
                     <p>Группа: ФБИ-31</p>

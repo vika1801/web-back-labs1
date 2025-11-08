@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{# номер лабораторной работы: #}
+{% block lab %}Лабораторная работа 2{% endblock %}
+
+{# основной контент: #}
+{% block main %}
+<h1>Список ягод</h1>
+
+{% for berry in berries %}
+<div>
+    <img src="{{ url_for('static', filename='lab2/berries/' + berry.image) }}" 
+         alt="{{ berry.name }}" 
+         width="200">
+    <h3>{{ berry.name }}</h3>
+    <p>{{ berry.description }}</p>
+    <hr>
+</div>
+{% endfor %}
+{% endblock %}
