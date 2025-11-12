@@ -100,7 +100,7 @@ def register():
 def list():
     login = session.get('login')
     if not login: 
-        return redirect('lab5/login')
+        return redirect('/lab5/login')
     conn, cur = db_connect()
     if current_app.config['DB_TYPE'] == 'postgres':
         cur.execute("SELECT id FROM users WHERE login=%s;", (login,))
