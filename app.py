@@ -58,6 +58,9 @@ def start():
                     <ul>
                         <li><a href="/lab5">Пятая лабораторная</a></li>
                     </ul>
+                    <ul>
+                        <li><a href="/lab6">Шестая лабораторная</a></li>
+                    </ul>
                 </nav>
                <h1>web-сервер на flask</h1>
                <a href="lab1/author">author</a>
