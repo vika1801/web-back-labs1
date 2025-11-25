@@ -1,7 +1,10 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, session
 
 lab6 = Blueprint('lab6', __name__)
 
+offices = []
+for i in range(1, 11):
+    offices.append({"number": i, "tenant": ""})
 
 @lab6.route('/lab6/')
 def main():
@@ -11,6 +14,7 @@ def main():
 def api():
     data = request.json
     id = data['id']
+
     if data['method'] == 'info':
         return {
             'jsonrpc': '2.0',
@@ -33,17 +37,66 @@ def api():
         office_number = data['params']
         for office in offices:
             if office['number'] == office_number:
+                if office['tenant'] != '':
+                    return {
+                        'jsonrpc': '2.0',
+                        'error': {
+                            'code': 2,
+                            'message': 'Already booked'
+                        },
+                        'id': id
+                    }
                 office['tenant'] = login
                 return {
                     'jsonrpc': '2.0',
                     'result': 'success',
                     'id': id 
-                }
+             }
+    if data ['method'] == 'cancellation':
+        office_number = data['params']
+        for office in offices:
+            if office['number'] == office_number:
+                if not office['tenant']:
+                    return {
+                        'jsonrpc': '2.0',
+                        'error': {
+                            'code': -32601,
+                            'message': 'Method not found'
+                        },
+                        'id': id
+            }
+    if office['tenant'] != login:
+                    return {
+                        'jsonrpc': '2.0',
+                        'error': {
+                            'code': 4,
+                            'message': 'Вы можете отменить только свою аренду'
+                        },
+                        'id': id
+                    }
+                
+    office['tensnt'] = ""
     return {
         'jsonrpc': '2.0',
-        'error': {
-            'code': -32601,
-            'message': 'Method not found'
-        },
+        'result': 'success',
         'id': id
     }
+
+    return {
+         'jsonrpc': '2.0',
+         'error': {
+              'code': 5,
+              'message': 'Офис не найден'
+         },
+         'id': id
+    }
+
+    return {
+         'jsonrpc': '2.0',
+         'error': {
+              'code' -32601,
+              'message': 'Method not found'
+         },
+         'id': id
+    }
+            
