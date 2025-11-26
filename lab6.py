@@ -4,7 +4,6 @@ import psycopg2
 lab6 = Blueprint('lab6', __name__)
 
 def get_db_connection():
-    """Создание подключения к базе данных"""
     conn = psycopg2.connect(
         host="localhost",
         database="vika_sopova_knowledge_base",
@@ -31,7 +30,6 @@ def api():
         cur.close()
         conn.close()
         
-        # Преобразуем в формат JSON
         offices = []
         for office in offices_data:
             offices.append({
@@ -62,7 +60,6 @@ def api():
         conn = get_db_connection()
         cur = conn.cursor()
         
-        # Проверяем, свободен ли офис
         cur.execute('SELECT tenant FROM offices WHERE number = %s', (office_number,))
         office = cur.fetchone()
         
@@ -78,7 +75,7 @@ def api():
                 'id': id
             }
         
-        if office[0]:  # Если tenant не пустой
+        if office[0]: 
             cur.close()
             conn.close()
             return {
@@ -90,7 +87,6 @@ def api():
                 'id': id
             }
         
-        # Бронируем офис
         cur.execute('UPDATE offices SET tenant = %s WHERE number = %s', (login, office_number))
         conn.commit()
         cur.close()
@@ -107,7 +103,6 @@ def api():
         conn = get_db_connection()
         cur = conn.cursor()
         
-        # Получаем информацию об офисе
         cur.execute('SELECT tenant FROM offices WHERE number = %s', (office_number,))
         office = cur.fetchone()
         
@@ -123,7 +118,7 @@ def api():
                 'id': id
             }
         
-        if not office[0]:  # Если офис не арендован
+        if not office[0]: 
             cur.close()
             conn.close()
             return {
@@ -135,7 +130,7 @@ def api():
                 'id': id
             }
         
-        if office[0] != login:  # Если офис арендован другим пользователем
+        if office[0] != login: 
             cur.close()
             conn.close()
             return {
@@ -147,7 +142,6 @@ def api():
                 'id': id
             }
         
-        # Снимаем аренду
         cur.execute('UPDATE offices SET tenant = %s WHERE number = %s', ('', office_number))
         conn.commit()
         cur.close()
