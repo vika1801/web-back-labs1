@@ -14,7 +14,7 @@ function fillFilmList() {
             let tdYear = document.createElement('td');
             let tdActions = document.createElement('td');
 
-            tdTitle.innerText = films[i].title == films[i].title_ru ? '' : films[i].title;
+            tdTitle.innerText = films[i].title;
             tdTitleRus.innerText = films[i].title_ru;
             tdYear.innerText = films[i].year;
 
@@ -112,10 +112,6 @@ function saveFilm() {
         return;
     }
     
-    if (!filmData.title.trim()) {
-        filmData.title = filmData.title_ru;
-    }
-    
     let url = '/lab7/rest-api/films/';
     let method = 'POST';
     
@@ -147,6 +143,4 @@ function saveFilm() {
     .catch(function(error) {
         console.error('Ошибка:', error);
     });
-}  
-
-document.addEventListener('DOMContentLoaded', fillFilmList);
+}
