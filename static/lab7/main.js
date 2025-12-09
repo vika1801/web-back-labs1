@@ -130,7 +130,7 @@ function saveFilm() {
     let method = 'POST';
     
     if (filmId !== '') {
-        url += filmId;
+        url = '/lab7/rest-api/films/${filmId}';
         method = 'PUT';
     }
     

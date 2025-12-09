@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, render_template, jsonify
-import datetime
+from datetime import datetime
 
 lab7 = Blueprint('lab7', __name__)
 
