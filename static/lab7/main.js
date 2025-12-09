@@ -78,18 +78,21 @@ function addFilm() {
 
 function editFilm(id) {
     fetch('/lab7/rest-api/films/' + id)
-        .then(response => response.json())
-        .then(film => {
-            document.getElementById('film-id').value = id;
-            document.getElementById('title-ru').value = film.title_ru;
-            document.getElementById('title').value = film.title;
-            document.getElementById('year').value = film.year;
-            document.getElementById('description').value = film.description;
-            showModal();
-        });
+    .then(function (data) {
+        return data.json();
+    })
+    .then(function (film) {
+        document.getElementById('film-id').value = id; // ✅ Исправлено: 'film-id'
+        document.getElementById('title').value = film.title;
+        document.getElementById('title-ru').value = film.title_ru; // ✅ Исправлено: 'title-ru'
+        document.getElementById('year').value = film.year;
+        document.getElementById('description').value = film.description;
+        showModal();
+    });
 }
 
 function saveFilm() {
+    const filmId = document.getElementById('film-id').value;
     const filmData = {
         title_ru: document.getElementById('title-ru').value,
         title: document.getElementById('title').value,
@@ -101,7 +104,6 @@ function saveFilm() {
         filmData.title = filmData.title_ru;
     }
     
-    const filmId = document.getElementById('film-id').value;
     let url = '/lab7/rest-api/films/';
     let method = 'POST';
     
