@@ -4,9 +4,9 @@ function fillFilmList() {
         return data.json();
     })
     .then(function (films) {
-        let tbody = document.getElementByld('film-list');
+        let tbody = document.getElementById('film-list');
         tbody.innerHTML = '';
-        for(let i = 0; i<films.lenght; i++) {
+        for(let i = 0; i < films.length; i++) {
             let tr = document.createElement('tr');
         
             let tdTitle = document.createElement('td');
@@ -21,35 +21,54 @@ function fillFilmList() {
             let editButton = document.createElement('button');
             editButton.innerText = 'редактировать';
 
-            let delButton = document.createElement('button')
+            let delButton = document.createElement('button');
             delButton.innerText = 'удалить';
             delButton.onclick = function() {
                 deleteFilm(i, films[i].title_ru);
             };
 
-            function fillFilmList() {
-
-            }
-
-            function deleteFilm(id, title) {
-                if(! confirm('Вы точно хотите удалить фильм "${title}"?'))
-                    return; 
-            
-                fetch('/lab7/rest-api/films/${id}', {method: 'DELETE'})
-                    .then(function () {
-                        fillFilmList();
-                    });
-            }
-
             tdActions.append(editButton);
-            tdActions.append(delButton) ;
+            tdActions.append(delButton);
  
             tr.append(tdTitle);
-            tr.append(tdTitle);
+            tr.append(tdTitleRus);
             tr.append(tdYear);
             tr.append(tdActions);
 
             tbody.append(tr);
         }
-    })
+    });
 }
+
+function deleteFilm(id, title) {
+    if(!confirm('Вы точно хотите удалить фильм "' + title + '"?'))
+        return; 
+    
+    fetch('/lab7/rest-api/films/' + id, {method: 'DELETE'})
+        .then(function () {
+            fillFilmList();
+        });
+}
+
+function showModal() {
+    document.querySelector('div.modal').style.display = 'block';
+}
+
+function hideModal() {
+    document.querySelector('div.modal').style.display = 'none';
+}
+
+function cancel() {
+    hideModal();
+}
+
+function addFilm() {
+    document.getElementById('id').value = '';
+    document.getElementById('title').value = '';
+    document.getElementById('title-ru').value = '';
+    document.getElementById('year').value = '';
+    document.getElementById('description').value = '';    
+    showModal();
+}
+
+document.addEventListener('DOMContentLoaded', fillFilmList);

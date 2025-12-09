@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, render_template
 
 lab7 = Blueprint('lab7', __name__)
 
@@ -8,7 +8,7 @@ films = [
 
 @lab7.route('/lab7/')
 def main():
-    return "Лабораторная 7 работает!"
+    return render_template('lab7/index.html')
 
 
 films = [
