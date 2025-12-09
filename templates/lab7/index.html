@@ -5,33 +5,215 @@
 {% block script %}
 <script src="{{ url_for('static', filename='lab7/main.js') }}"></script>
 <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background-color: white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    th {
+        background-color: #6a11cb;
+        color: white;
+        padding: 15px;
+        text-align: left;
+        font-weight: bold;
+        border-bottom: 2px solid #4d0d9c;
+    }
+
+    td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #eee;
+    }
+
+    tr:hover {
+        background-color: #f9f9f9;
+        transition: background-color 0.3s;
+    }
+
+    td button {
+        margin: 0 5px;
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+    td button:first-child {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    td button:first-child:hover {
+        background-color: #45a049;
+        transform: translateY(-2px);
+    }
+
+    td button:last-child {
+        background-color: #f44336;
+        color: white;
+    }
+
+    td button:last-child:hover {
+        background-color: #d32f2f;
+        transform: translateY(-2px);
+    }
+
+    div > button {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        font-size: 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin: 10px 0;
+        box-shadow: 0 4px 12px rgba(106, 17, 203, 0.3);
+        transition: all 0.3s;
+    }
+
+    div > button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 16px rgba(106, 17, 203, 0.4);
+    }
+
+    div > button:active {
+        transform: translateY(-1px);
+    }
+
+    h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        border-bottom: 3px solid #6a11cb;
+        position: relative;
+    }
+
+    h1:after {
+        content: '';
+        position: absolute;
+        bottom: -3px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(90deg, #6a11cb, #2575fc);
+    }
+
     .modal {
         display: none;
         z-index: 100;
-        box-shadow: 3px 3px 5px purple;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         background: white;
-        width: 400px;
+        width: 450px;
         left: 50%;
-        top: 220px;
-        margin-left: -200px;
-        position: absolute;
-        padding: 20px;
-    }
-    
-    .modal-backdrop {
-        display: none;
+        top: 50%;
+        transform: translate(-50%, -50%);
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.5);
-        z-index: 99;
+        padding: 25px;
+        border-radius: 12px;
+        border: 2px solid #6a11cb;
     }
-    .error-message {
-        color: red;
-        font-size: 14px;
+
+    .modal h2 {
+        color: #6a11cb;
+        margin-top: 0;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .modal label {
+        display: block;
+        margin-bottom: 15px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .modal input,
+    .modal textarea {
+        width: 100%;
+        padding: 10px;
         margin-top: 5px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        box-sizing: border-box;
+        font-size: 14px;
+        transition: border-color 0.3s;
+    }
+
+    .modal input:focus,
+    .modal textarea:focus {
+        outline: none;
+        border-color: #6a11cb;
+        box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+    }
+
+    .modal textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .modal button {
+        padding: 10px 20px;
+        margin: 5px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+        transition: all 0.3s;
+    }
+
+    .modal button:first-of-type {
+        background-color: #6a11cb;
+        color: white;
+    }
+
+    .modal button:first-of-type:hover {
+        background-color: #5a0db3;
+        transform: translateY(-2px);
+    }
+
+    .modal button:last-of-type {
+        background-color: #757575;
+        color: white;
+    }
+
+    .modal button:last-of-type:hover {
+        background-color: #616161;
+        transform: translateY(-2px);
+    }
+
+    .error-message {
+        color: #ff3860;
+        font-size: 13px;
+        margin-top: 5px;
+        font-weight: bold;
+        padding: 5px;
+        border-radius: 4px;
+        background-color: #ffebee;
+        display: inline-block;
+    }
+
+    .original-title {
+        font-style: italic;
+        color: #666;
+        font-size: 0.9em;
+        opacity: 0.8;
     }
 </style>
 {% endblock %}
