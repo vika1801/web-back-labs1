@@ -91,6 +91,17 @@ def put_film(id):
     film = request.get_json()
     if not film.get('description') or film['description'].strip() == '':
         return jsonify({"description": "Заполните описание"}), 400
+    if len(film['description']) > 2000:
+        return jsonify({"description": "Описание не должно превышать 2000 символов"}), 400
+    if (not film.get('title') or film['title'].strip() == '') and (not film.get('title_ru') or film['title_ru'].strip() == ''):
+        return jsonify({"title": "Заполните хотя бы одно название"}), 400
+    current_year = datetime.now().year
+    try:
+        year = int(film.get('year', 0))
+        if year < 1895 or year > current_year:
+            return jsonify({"year": f"Год должен быть от 1895 до {current_year}"}), 400
+    except (ValueError, TypeError):
+        return jsonify({"year": "Некорректный год"}), 400
     if not film.get('title') or film['title'].strip() == '':
         film['title'] = film.get('title_ru', '')
     films[id] = film
@@ -99,8 +110,22 @@ def put_film(id):
 @lab7.route('/lab7/rest-api/films/', methods=['POST'])
 def add_film():
     film = request.get_json()
+    film['title'] = film.get('title_ru', '')
     if not film.get('description') or film['description'].strip() == '':
         return jsonify({"description": "Заполните описание"}), 400
+    if len(film['description']) > 2000:
+        return jsonify({"description": "Описание не должно превышать 2000 символов"}), 400
+    if not film.get('title_ru') or film['title_ru'].strip() == '':
+        return jsonify({"title_ru": "Заполните русское название"}), 400
+    if (not film.get('title') or film['title'].strip() == '') and (not film.get('title_ru') or film['title_ru'].strip() == ''):
+        return jsonify({"title": "Заполните хотя бы одно название"}), 400
+    current_year = datetime.now().year
+    try:
+        year = int(film.get('year', 0))
+        if year < 1895 or year > current_year:
+            return jsonify({"year": f"Год должен быть от 1895 до {current_year}"}), 400
+    except (ValueError, TypeError):
+        return jsonify({"year": "Некорректный год"}), 400
     if not film.get('title') or film['title'].strip() == '':
         film['title'] = film.get('title_ru', '')
     films.append(film)
