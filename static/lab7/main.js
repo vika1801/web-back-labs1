@@ -20,6 +20,9 @@ function fillFilmList() {
 
             let editButton = document.createElement('button');
             editButton.innerText = 'редактировать';
+            editButton.onclick = function() {
+                editFilm(i);
+            };
 
             let delButton = document.createElement('button');
             delButton.innerText = 'удалить';
@@ -41,7 +44,7 @@ function fillFilmList() {
 }
 
 function deleteFilm(id, title) {
-    if(!confirm('Вы точно хотите удалить фильм " ${title}$ "?'))
+    if(!confirm('Вы точно хотите удалить фильм "' + title + '"?'))
         return; 
     
     fetch('/lab7/rest-api/films/' + id, {method: 'DELETE'})
@@ -52,10 +55,12 @@ function deleteFilm(id, title) {
 
 function showModal() {
     document.querySelector('div.modal').style.display = 'block';
+    document.querySelector('.modal-backdrop').style.display = 'block';
 }
 
 function hideModal() {
     document.querySelector('div.modal').style.display = 'none';
+    document.querySelector('.modal-backdrop').style.display = 'none';
 }
 
 function cancel() {
@@ -63,12 +68,59 @@ function cancel() {
 }
 
 function addFilm() {
-    document.getElementById('id').value = '';
+    document.getElementById('film-id').value = '';
     document.getElementById('title').value = '';
     document.getElementById('title-ru').value = '';
     document.getElementById('year').value = '';
     document.getElementById('description').value = '';    
     showModal();
+}
+
+function editFilm(id) {
+    fetch('/lab7/rest-api/films/' + id)
+        .then(response => response.json())
+        .then(film => {
+            document.getElementById('film-id').value = id;
+            document.getElementById('title-ru').value = film.title_ru;
+            document.getElementById('title').value = film.title;
+            document.getElementById('year').value = film.year;
+            document.getElementById('description').value = film.description;
+            showModal();
+        });
+}
+
+function saveFilm() {
+    const filmData = {
+        title_ru: document.getElementById('title-ru').value,
+        title: document.getElementById('title').value,
+        year: parseInt(document.getElementById('year').value),
+        description: document.getElementById('description').value
+    };
+    
+    if (!filmData.title.trim()) {
+        filmData.title = filmData.title_ru;
+    }
+    
+    const filmId = document.getElementById('film-id').value;
+    let url = '/lab7/rest-api/films/';
+    let method = 'POST';
+    
+    if (filmId !== '') {
+        url += filmId;
+        method = 'PUT';
+    }
+    
+    fetch(url, {
+        method: method,
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(filmData)
+    })
+    .then(response => {
+        if (response.ok) {
+            hideModal();
+            fillFilmList();
+        }
+    });
 }
 
 document.addEventListener('DOMContentLoaded', fillFilmList);
