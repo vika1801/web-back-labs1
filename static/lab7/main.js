@@ -8,14 +8,28 @@ function fillFilmList() {
         tbody.innerHTML = '';
         for(let i = 0; i < films.length; i++) {
             let tr = document.createElement('tr');
-        
-            let tdTitle = document.createElement('td');
+
             let tdTitleRus = document.createElement('td');
+            let tdTitle = document.createElement('td');
             let tdYear = document.createElement('td');
             let tdActions = document.createElement('td');
 
-            tdTitle.innerText = films[i].title;
             tdTitleRus.innerText = films[i].title_ru;
+            
+            if (films[i].title && films[i].title.trim() !== '') {
+                let originalSpan = document.createElement('span');
+                originalSpan.innerText = `(${films[i].title})`;
+                originalSpan.style.fontStyle = 'italic';
+                originalSpan.style.color = '#666';
+                tdTitle.appendChild(originalSpan);
+            } else {let autoSpan = document.createElement('span');
+                autoSpan.innerText = '(автоматически)';
+                autoSpan.style.fontStyle = 'italic';
+                autoSpan.style.color = '#999';
+                autoSpan.title = 'Автоматически заполнено русским названием';
+                tdTitle.appendChild(autoSpan);
+            }
+
             tdYear.innerText = films[i].year;
 
             let editButton = document.createElement('button');
