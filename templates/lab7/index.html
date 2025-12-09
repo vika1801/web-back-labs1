@@ -28,6 +28,11 @@
         background: rgba(0,0,0,0.5);
         z-index: 99;
     }
+    .error-message {
+        color: red;
+        font-size: 14px;
+        margin-top: 5px;
+    }
 </style>
 {% endblock %}
 
@@ -76,6 +81,7 @@
         <label>
             Описание:
             <textarea id="description" required></textarea>
+            <div id="description-error" class="error-message"></div>
         </label><br>
 
         <button onclick="saveFilm()">Ок</button>

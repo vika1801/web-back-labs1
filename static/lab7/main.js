@@ -54,6 +54,7 @@ function deleteFilm(id, title) {
 }
 
 function showModal() {
+    document.getElementById('description-error').innerText = '';
     document.querySelector('div.modal').style.display = 'block';
     document.querySelector('.modal-backdrop').style.display = 'block';
 }
@@ -67,24 +68,30 @@ function cancel() {
     hideModal();
 }
 
-function addFilm() {
+function clearForm() {
     document.getElementById('film-id').value = '';
     document.getElementById('title').value = '';
     document.getElementById('title-ru').value = '';
     document.getElementById('year').value = '';
-    document.getElementById('description').value = '';    
+    document.getElementById('description').value = '';
+    document.getElementById('description-error').innerText = '';
+}
+
+function addFilm() {
+    clearForm();
     showModal();
 }
 
 function editFilm(id) {
+    clearForm();
     fetch('/lab7/rest-api/films/' + id)
     .then(function (data) {
         return data.json();
     })
     .then(function (film) {
-        document.getElementById('film-id').value = id; // ✅ Исправлено: 'film-id'
+        document.getElementById('film-id').value = id;
         document.getElementById('title').value = film.title;
-        document.getElementById('title-ru').value = film.title_ru; // ✅ Исправлено: 'title-ru'
+        document.getElementById('title-ru').value = film.title_ru;
         document.getElementById('year').value = film.year;
         document.getElementById('description').value = film.description;
         showModal();
@@ -99,6 +106,11 @@ function saveFilm() {
         year: parseInt(document.getElementById('year').value),
         description: document.getElementById('description').value
     };
+
+    if (!filmData.description || filmData.description.trim() === '') {
+        document.getElementById('description-error').innerText = 'Заполните описание';
+        return;
+    }
     
     if (!filmData.title.trim()) {
         filmData.title = filmData.title_ru;
@@ -112,17 +124,29 @@ function saveFilm() {
         method = 'PUT';
     }
     
+    document.getElementById('description-error').innerText = '';
+
     fetch(url, {
         method: method,
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(filmData)
     })
-    .then(response => {
-        if (response.ok) {
+    .then(function(resp) {
+        if (resp.ok) {
             hideModal();
             fillFilmList();
+            return {};
         }
+        return resp.json();
+    })
+    .then(function(errors) {
+        if(errors && errors.description) {
+            document.getElementById('description-error').innerText = errors.description;
+        }
+    })
+    .catch(function(error) {
+        console.error('Ошибка:', error);
     });
-}
+}  
 
 document.addEventListener('DOMContentLoaded', fillFilmList);
