@@ -12,22 +12,15 @@ function fillFilmList() {
             let tdTitleRus = document.createElement('td');
             let tdTitle = document.createElement('td');
             let tdYear = document.createElement('td');
-            let tdActions = document.createElement('td');
+            let tdActions = document.createElement('td'); 
 
             tdTitleRus.innerText = films[i].title_ru;
             
-            if (films[i].title && films[i].title.trim() !== '') {
-                let originalSpan = document.createElement('span');
-                originalSpan.innerText = `(${films[i].title})`;
-                originalSpan.style.fontStyle = 'italic';
-                originalSpan.style.color = '#666';
-                tdTitle.appendChild(originalSpan);
-            } else {let autoSpan = document.createElement('span');
-                autoSpan.innerText = '(автоматически)';
-                autoSpan.style.fontStyle = 'italic';
-                autoSpan.style.color = '#999';
-                autoSpan.title = 'Автоматически заполнено русским названием';
-                tdTitle.appendChild(autoSpan);
+            if (films[i].title && films[i].title.trim() !== '' && 
+                films[i].title !== films[i].title_ru) {
+                tdTitle.innerText = films[i].title;
+            } else {
+                tdTitle.innerHTML = '<span style="font-style: italic; color: #999;" title="Автоматически заполнено русским названием">(автоматически)</span>';
             }
 
             tdYear.innerText = films[i].year;
@@ -47,8 +40,9 @@ function fillFilmList() {
             tdActions.append(editButton);
             tdActions.append(delButton);
  
-            tr.append(tdTitle);
+            
             tr.append(tdTitleRus);
+            tr.append(tdTitle);
             tr.append(tdYear);
             tr.append(tdActions);
 
@@ -108,7 +102,13 @@ function editFilm(id) {
         document.getElementById('title-ru').value = film.title_ru;
         document.getElementById('year').value = film.year;
         document.getElementById('description').value = film.description;
-        showModal();
+        setTimeout(function() {
+            showModal();
+        }, 100);
+    })
+    .catch(function(error) {
+        console.error('Ошибка при загрузке фильма:', error);
+        alert('Не удалось загрузить данные фильма');
     });
 }
 
@@ -121,6 +121,8 @@ function saveFilm() {
         description: document.getElementById('description').value
     };
 
+    document.getElementById('description-error').innerText = '';
+    
     if (!filmData.description || filmData.description.trim() === '') {
         document.getElementById('description-error').innerText = 'Заполните описание';
         return;
@@ -130,7 +132,7 @@ function saveFilm() {
     let method = 'POST';
     
     if (filmId !== '') {
-        url = '/lab7/rest-api/films/${filmId}';
+        url += filmId;
         method = 'PUT';
     }
     
