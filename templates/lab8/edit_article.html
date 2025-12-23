@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 8 - Редактирование статьи{% endblock %}
+
+{% block main %}
+    <h1>Редактирование статьи</h1>
+    
+    {% if error %}
+        <div style="color: red; padding: 10px; border: 1px solid red; margin-bottom: 15px;">
+            {{ error }}
+        </div>
+    {% endif %}
+    
+    <form method="post" action="{{ url_for('lab8.edit_article', article_id=article.id) }}">
+        <div>
+            <label for="title">Заголовок:</label><br>
+            <input type="text" id="title" name="title" value="{{ article.title }}" required maxlength="50" style="width: 300px;">
+        </div><br>
+        
+        <div>
+            <label for="article_text">Текст статьи:</label><br>
+            <textarea id="article_text" name="article_text" rows="10" required style="width: 100%;">{{ article.article_text }}</textarea>
+        </div><br>
+        
+        <div>
+            <label>
+                <input type="checkbox" name="is_public" {% if article.is_public %}checked{% endif %}>
+                Публичная статья
+            </label>
+        </div><br>
+        
+        <div>
+            <label>
+                <input type="checkbox" name="is_favorite" {% if article.is_favorite %}checked{% endif %}>
+                В избранное
+            </label>
+        </div><br>
+        
+        <button type="submit">Сохранить</button>
+        <a href="{{ url_for('lab8.view_article', article_id=article.id) }}" style="margin-left: 15px;">Отмена</a>
+    </form>
+{% endblock %}

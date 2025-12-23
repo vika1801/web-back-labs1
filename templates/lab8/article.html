@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 8 - {{ article.title }}{% endblock %}
+
+{% block main %}
+    <h1>{{ article.title }}</h1>
+    
+    <div style="margin-bottom: 20px;">
+        <small>
+            {% if author %}
+                Автор: {{ author.login }}
+            {% endif %}
+            | 
+            {% if article.is_public %}
+                Публичная статья
+            {% else %}
+                Приватная статья
+            {% endif %}
+            | Лайков: {{ article.likes or 0 }}
+        </small>
+    </div>
+    
+    <div style="border: 1px solid #ddd; padding: 20px; background: #f9f9f9;">
+        {{ article.article_text|safe }}
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <a href="{{ url_for('lab8.article_list') }}">← Назад к списку</a>
+        
+        {% if current_user.id == article.login_id %}
+            <a href="{{ url_for('lab8.edit_article', article_id=article.id) }}" style="margin-left: 15px;">Редактировать</a>
+        {% endif %}
+        
+        <form method="post" action="{{ url_for('lab8.like_article', article_id=article.id) }}" style="display: inline; margin-left: 15px;">
+            <button type="submit">❤️ Лайк</button>
+        </form>
+    </div>
+{% endblock %}

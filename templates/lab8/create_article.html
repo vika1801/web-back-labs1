@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 8 - Создание статьи{% endblock %}
+
+{% block main %}
+    <h1>Создание статьи</h1>
+    
+    {% if error %}
+        <div style="color: red; padding: 10px; border: 1px solid red; margin-bottom: 15px;">
+            {{ error }}
+        </div>
+    {% endif %}
+    
+    <form method="post" action="{{ url_for('lab8.create') }}">
+        <div>
+            <label for="title">Заголовок:</label><br>
+            <input type="text" id="title" name="title" required maxlength="50" style="width: 300px;">
+        </div><br>
+        
+        <div>
+            <label for="article_text">Текст статьи:</label><br>
+            <textarea id="article_text" name="article_text" rows="10" required style="width: 100%;"></textarea>
+        </div><br>
+        
+        <div>
+            <label>
+                <input type="checkbox" name="is_public">
+                Публичная статья
+            </label>
+        </div><br>
+        
+        <div>
+            <label>
+                <input type="checkbox" name="is_favorite">
+                В избранное
+            </label>
+        </div><br>
+        
+        <button type="submit">Создать статью</button>
+        <a href="{{ url_for('lab8.article_list') }}" style="margin-left: 15px;">Отмена</a>
+    </form>
+{% endblock %}

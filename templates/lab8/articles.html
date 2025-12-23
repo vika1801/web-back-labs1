@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 8 - Статьи{% endblock %}
+
+{% block main %}
+    <h1>Статьи</h1>
+    
+    <div style="margin-bottom: 20px;">
+        <a href="{{ url_for('lab8.create') }}" style="background: #4CAF50; color: white; padding: 10px; text-decoration: none;">
+            + Создать статью
+        </a>
+    </div>
+    
+    {% if articles %}
+        <div>
+            {% for article in articles %}
+                <div style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px;">
+                    <h3><a href="{{ url_for('lab8.view_article', article_id=article.id) }}">{{ article.title }}</a></h3>
+                    <p>{{ article.article_text[:150] }}{% if article.article_text|length > 150 %}...{% endif %}</p>
+                    
+                    <div style="font-size: 0.9em; color: #666;">
+                        {% if article.is_public %}
+                            <span style="color: green;">✓ Публичная</span>
+                        {% else %}
+                            <span style="color: red;">✗ Приватная</span>
+                        {% endif %}
+                        <span>Лайков: {{ article.likes or 0 }}</span>
+                    </div>
+                    
+                    <div style="margin-top: 10px;">
+                        <a href="{{ url_for('lab8.edit_article', article_id=article.id) }}">Редактировать</a>
+                        <form method="post" action="{{ url_for('lab8.delete_article', article_id=article.id) }}" style="display: inline;">
+                            <button type="submit" style="color: red; border: none; background: none; cursor: pointer;" 
+                                    onclick="return confirm('Удалить статью?')">Удалить</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Статьи не найдены.</p>
+    {% endif %}
+{% endblock %}
