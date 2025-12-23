@@ -153,3 +153,20 @@ def like_article(article_id):
     article.likes = (article.likes or 0) + 1
     db.session.commit()
     return redirect(f'/lab8/article/{article_id}')
+
+@lab8.route('/lab8/search')
+def search():
+    query = request.args.get('q', '').strip()
+    if not query:
+        return redirect('/lab8/articles')
+    
+    results = articles.query.filter(
+        db.or_(
+            articles.title.ilike(f'%{query}%'),
+            articles.article_text.ilike(f'%{query}%')
+        )
+    ).all()
+    
+    return render_template('lab8/search.html', 
+                           query=query, 
+                           results=results)

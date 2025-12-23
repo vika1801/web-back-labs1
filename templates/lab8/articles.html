@@ -3,6 +3,11 @@
 {% block lab %}Лабораторная работа 8 - Статьи{% endblock %}
 
 {% block main %}
+
+    <form action="/lab8/search" method="get">
+         <input type="text" name="q" placeholder="Поиск по статьям...">
+         <button type="submit">Найти</button>
+    </form>
     <h1>Статьи</h1>
     
     <div style="margin-bottom: 20px;">

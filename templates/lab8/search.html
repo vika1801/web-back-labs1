@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block lab %}Поиск статей{% endblock %}
+
+{% block main %}
+<h1>Результаты поиска: «{{ query }}»</h1>
+
+{% if results %}
+<ul>
+    {% for article in results %}
+    <li>
+        <h3>{{ article.title }}</h3>
+        <p>{{ article.article_text[:200] }}...</p>
+        <small>Автор: {{ article.user.login }}</small>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>Ничего не найдено.</p>
+{% endif %}
+
+<a href="/lab8/articles">Назад к статьям</a>
+{% endblock %}
