@@ -8,11 +8,19 @@
     {% if current_user.is_authenticated %}
         <p>Добро пожаловать, <strong>{{ current_user.login }}</strong>!</p>
         <p>Вы можете:</p>
-        <ul>
-            <li><a href="{{ url_for('lab8.article_list') }}">Просмотреть статьи</a></li>
-            <li><a href="{{ url_for('lab8.create') }}">Создать новую статью</a></li>
-            <li><a href="{{ url_for('lab8.logout') }}">Выйти из системы</a></li>
-        </ul>
+        <section>
+            <div class="block1">
+                <div class="bl">
+                    <a href="{{ url_for('lab8.article_list') }}">Просмотреть статьи</a>
+                </div>
+                <div class="bl">
+                    <a href="{{ url_for('lab8.create') }}">Создать новую статью</a>
+                </div>
+                <div class="bl">
+                    <a href="{{ url_for('lab8.logout') }}">Выйти из системы</a>
+                </div>
+            </div>
+        </section>
     {% else %}
         <p>Для работы с системой необходимо авторизоваться.</p>
         <ul>
