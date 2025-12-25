@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block lab %}Лабораторная работа 9 — Новогодние подарки{% endblock %}
+{% block script %}
+<script src="{{ url_for('static', filename='lab9/main.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='lab9/style.css') }}">
+{% endblock %}
+{% block main %}
+<div class="header">
+     Осталось неоткрытых коробок: <span id="count">{{ unopened }}</span>
+    {% if login %}
+    <span class="welcome"> Добро пожаловать, {{ login }}!</span>
+    <button onclick="resetBoxes()" class="reset-btn"> Дед Мороз</button>
+    {% else %}
+    <span class="login-prompt"> Войдите через /lab5/login для особых подарков!</span>
+    {% endif %}
+</div>
+
+<div id="area" class="gift-area"></div>
+
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img id="img" src="" alt="Подарок">
+        <p id="text"></p>
+    </div>
+</div>
+{% endblock %}
