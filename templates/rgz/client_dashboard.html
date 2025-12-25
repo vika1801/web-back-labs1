@@ -1,0 +1,105 @@
+{% extends "base1.html" %}
+
+{% block title %}Личный кабинет клиента{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <!-- Карточка баланса -->
+    <div class="balance-card">
+        <h2 id="balance">{{ "%.2f"|format(user.balance) }} ₽</h2>
+        <p>Ваш текущий баланс</p>
+        <p style="margin-top: 10px; font-size: 0.9rem;">
+            Номер счета: <strong>{{ user.account_number }}</strong>
+        </p>
+    </div>
+    
+    <!-- Информация о пользователе -->
+    <div class="grid">
+        <div class="card">
+            <h3>👤 Личная информация</h3>
+            <p><strong>ФИО:</strong> {{ user.full_name }}</p>
+            <p><strong>Логин:</strong> {{ user.login }}</p>
+            <p><strong>Телефон:</strong> {{ user.phone or 'Не указан' }}</p>
+            <p><strong>Статус:</strong> Клиент</p>
+        </div>
+        
+        <div class="card">
+            <h3>💳 Быстрые операции</h3>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-primary" onclick="showTransferForm()">
+                    💸 Перевод денег
+                </button>
+                <button class="btn btn-secondary" onclick="loadHistory()">
+                    📊 История операций
+                </button>
+            </div>
+            
+            <div style="margin-top: 15px; font-size: 0.9rem; color: #666;">
+                <p>Вы можете переводить деньги по:</p>
+                <ul style="margin-left: 20px;">
+                    <li>Номеру счета (например: {{ user.account_number }})</li>
+                    <li>Номеру телефона (например: {{ user.phone or '+79991234567' }})</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Форма перевода -->
+    <div id="transferForm" class="form-section hidden">
+        <h3>💰 Перевод денег</h3>
+        <form id="transferFormElement">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Получатель:</label>
+                    <input type="text" id="recipient" 
+                           placeholder="Номер счета или телефон (+7...)" required>
+                    <small style="display: block; margin-top: 5px; color: #666;">
+                        Пример: ADMIN001 или +79991234567
+                    </small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Сумма (₽):</label>
+                    <input type="number" id="amount" min="0.01" step="0.01" 
+                           placeholder="0.00" required>
+                    <small style="display: block; margin-top: 5px; color: #666;">
+                        Доступно: {{ "%.2f"|format(user.balance) }} ₽
+                    </small>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn btn-success">
+                    Выполнить перевод
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="hideTransferForm()">
+                    Отмена
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- История операций -->
+    <div id="historySection" class="form-section hidden">
+        <h3>📈 История операций</h3>
+        <div id="historyList">
+            <!-- История будет загружена здесь -->
+        </div>
+        <button class="btn btn-secondary" onclick="hideHistory()" style="margin-top: 15px;">
+            Закрыть историю
+        </button>
+    </div>
+    
+    <!-- Инструкция -->
+    <div class="card" style="margin-top: 2rem; background: #f0f8ff; border-left-color: #1e3c72;">
+        <h3>ℹ️ Инструкция по использованию</h3>
+        <ol style="margin-left: 20px;">
+            <li>Нажмите "💸 Перевод денег" для перевода средств другому пользователю</li>
+            <li>Укажите получателя по номеру счета или телефону</li>
+            <li>Введите сумму перевода</li>
+            <li>Нажмите "📊 История операций" для просмотра всех транзакций</li>
+            <li>Для выхода из системы нажмите "🚪 Выход" в правом верхнем углу</li>
+        </ol>
+    </div>
+</div>
+{% endblock %}

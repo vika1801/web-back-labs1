@@ -1,35 +1,28 @@
-from flask import Flask, url_for, request, redirect, make_response, render_template, abort
+from flask import Flask, url_for, request, redirect, make_response, render_template, abort, session, jsonify
 import datetime
 import os
 from os import path
 from flask_sqlalchemy import SQLAlchemy
-from db import db
-from db.models import users
-from flask_login import LoginManager
+from db import db, init_db, users
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
-from lab1 import lab1
-from lab2 import lab2
-from lab3 import lab3
-from lab4 import lab4
-from lab5 import lab5
-from lab6 import lab6
-from lab7 import lab7
-from lab8 import lab8 
-from lab9 import lab9
-
+# ========== 1. СОЗДАЕМ ПРИЛОЖЕНИЕ ==========
 app = Flask(__name__)
 
+# ========== 2. НАСТРАИВАЕМ КОНФИГУРАЦИЮ ==========
 login_manager = LoginManager()
-login_manager.login_view = 'lab8.login'
 login_manager.init_app(app)
 
 @login_manager.user_loader
-def load_users(login_id):
-    return users.query.get(int(login_id))
+def load_user(user_id):
+    return users.query.get(int(user_id))
 
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'cекретно-секретный секрет')
-app.config['DB_TYPE'] = os.getenv('DB_TYPE', 'postgres')
+# Конфигурация
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'cекретно-секретный-ключ-для-банка')
+app.config['DB_TYPE'] = os.getenv('DB_TYPE', 'sqlite')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# Настройка БД
 if app.config['DB_TYPE'] == 'postgres':
     db_name = 'vika_sopova_orm'
     db_user = 'vika_sopova_orm'
@@ -44,19 +37,27 @@ else:
     db_path = path.join(dir_path, "vika_sopova_orm.db")
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 
+# ========== 3. ИНИЦИАЛИЗИРУЕМ БД ==========
 db.init_app(app)
+with app.app_context():
+    init_db(app)
 
-app.register_blueprint(lab1) 
-app.register_blueprint(lab2) 
-app.register_blueprint(lab3) 
-app.register_blueprint(lab4) 
-app.register_blueprint(lab5) 
-app.register_blueprint(lab6)
-app.register_blueprint(lab7)
-app.register_blueprint(lab8)
+# ========== 4. ИМПОРТИРУЕМ ТОЛЬКО НУЖНЫЕ ЛАБОРАТОРНЫЕ ==========
+# Импорт ТОЛЬКО lab5 и lab9
+from lab5 import lab5
+from lab9 import lab9
+
+# Импорт банковского модуля
+from bank import bank
+
+# Регистрация ТОЛЬКО lab5 и lab9
+app.register_blueprint(lab5)
 app.register_blueprint(lab9)
 
+# Регистрация банковского модуля с префиксом
+app.register_blueprint(bank, url_prefix='/bank')
 
+# ========== 5. МАРШРУТЫ ПРИЛОЖЕНИЯ ==========
 @app.route("/")
 @app.route('/index')
 def start():
@@ -73,80 +74,229 @@ def start():
                 <link rel="icon" href="{favicon_32_url}">
                 <link rel="icon" href="{favicon_16_url}">
                 <title>HTTP, ФБ, Лабораторные работы</title>
-            </head>
-            <body>
-                <header>
-                    <h1>HTTP, ФБ, WEB-программирование, часть 2. Список лабораторных</h1>
-                </header>
-                <nav>
-                    <ul>
-                        <li><a href="/lab1">Первая лабораторная</a></li>
-                        <li><a href="/lab2">Вторая лабораторная</a></li>
-                        <li><a href="/lab3">Третья лабораторная</a></li>
-                        <li><a href="/lab4">Четвертая лабораторная</a></li>
-                        <li><a href="/lab5">Пятая лабораторная</a></li>
-                        <li><a href="/lab6">Шестая лабораторная</a></li>
-                        <li><a href="/lab7">Седьмая лабораторная</a></li>
-                        <li><a href="/lab8">Восьмая лабораторная</a></li>
-                        <li><a href="/lab9">Девятая лабораторная</a></li>
-                    </ul>
-                </nav> 
-               <h1>web-сервер на flask</h1>
-               <a href="lab1/author">author</a>
-               <footer>
-                    <p>ФИО: Сопова Виктория Андреевна</p>
-                    <p>Группа: ФБИ-31</p>
-                    <p>Курс: 3</p>
-                    <p>Год: 2025</p>
-            </footer>
-            </body>
-        </html>
-        """
-
-
-@app.errorhandler(404)
-def not_found(err):
-    css_url = url_for('static', filename='lab1/lab1.css')
-    image_url = url_for('static', filename='lab1/error.jpg')
-    
-    return f"""
-        <!doctype html>
-        <html>
-            <head>
-                <title>404 - Страница не найдена</title>
-                <link rel="stylesheet" href="{css_url}">
                 <style>
-                    .error-container {{
+                    * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+                    body {{ 
+                        font-family: 'Arial', sans-serif; 
+                        line-height: 1.6; 
+                        color: #333;
+                        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+                        min-height: 100vh;
+                    }}
+                    .container {{ 
+                        max-width: 1200px; 
+                        margin: 0 auto; 
+                        padding: 20px; 
+                    }}
+                    header {{ 
+                        background: #1e3c72; 
+                        color: white; 
+                        padding: 2rem 0;
                         text-align: center;
-                        padding: 50px;
+                        margin-bottom: 2rem;
+                        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
                     }}
-                    .error-image {{
-                        max-width: 400px;
-                        height: auto;
-                        margin: 20px 0;
+                    header h1 {{ 
+                        font-size: 2.5rem; 
+                        margin-bottom: 1rem;
                     }}
-                    .error-message {{
-                        color: #d9534f;
-                        font-size: 24px;
-                        margin: 20px 0;
+                    nav {{ 
+                        background: white; 
+                        border-radius: 10px;
+                        padding: 2rem;
+                        margin-bottom: 2rem;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                    }}
+                    nav ul {{ 
+                        list-style: none;
+                        display: grid;
+                        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                        gap: 1rem;
+                    }}
+                    nav li {{ 
+                        margin-bottom: 0.5rem;
+                    }}
+                    nav a {{ 
+                        display: block;
+                        padding: 1rem;
+                        background: #f8f9fa;
+                        border-radius: 8px;
+                        text-decoration: none;
+                        color: #1e3c72;
+                        font-weight: 500;
+                        transition: all 0.3s ease;
+                        border: 2px solid transparent;
+                    }}
+                    nav a:hover {{ 
+                        background: #1e3c72;
+                        color: white;
+                        transform: translateY(-2px);
+                        box-shadow: 0 6px 12px rgba(30, 60, 114, 0.2);
+                        border-color: #1e3c72;
+                    }}
+                    .main-content {{ 
+                        background: white; 
+                        padding: 2rem;
+                        border-radius: 10px;
+                        margin-bottom: 2rem;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                    }}
+                    .main-content h2 {{ 
+                        color: #1e3c72;
+                        margin-bottom: 1rem;
+                        border-bottom: 3px solid #1e3c72;
+                        padding-bottom: 0.5rem;
+                    }}
+                    footer {{ 
+                        background: #1e3c72; 
+                        color: white; 
+                        padding: 2rem 0;
+                        text-align: center;
+                        margin-top: 2rem;
+                        border-radius: 10px 10px 0 0;
+                    }}
+                    .footer-content {{ 
+                        display: grid;
+                        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                        gap: 2rem;
+                        text-align: left;
+                    }}
+                    .footer-section h3 {{ 
+                        margin-bottom: 1rem;
+                        font-size: 1.2rem;
+                    }}
+                    .highlight {{ 
+                        background: linear-gradient(135deg, #4CAF50, #2E7D32);
+                        color: white;
+                        padding: 1rem;
+                        border-radius: 8px;
+                        font-weight: bold;
+                        margin: 1rem 0;
+                        text-align: center;
+                    }}
+                    @media (max-width: 768px) {{
+                        nav ul {{ grid-template-columns: 1fr; }}
+                        .footer-content {{ grid-template-columns: 1fr; }}
                     }}
                 </style>
             </head>
             <body>
-                <div class="error-container">
-                    <h1>404 - Страница не найдена</h1>
-                    <div class="error-message">нет такой страницы</div>
-                    <img src="{image_url}" alt="Ошибка 404" class="error-image">
-                    <br>
-                    <a href="/">Вернуться на главную</a>
-                    <br>
-                    <a href="/lab1">К лабораторной работе</a>
+                <header>
+                    <div class="container">
+                        <h1>WEB-программирование, часть 2</h1>
+                        <p>ФБИ-31 | Сопова Виктория Андреевна</p>
+                    </div>
+                </header>
+                
+                <div class="container">
+                    <nav>
+                        <h2 style="color: #1e3c72; margin-bottom: 1.5rem; text-align: center;">📚 Доступные лабораторные работы</h2>
+                        <ul>
+                            <li><a href="/lab5">🔬 Лабораторная работа 5</a></li>
+                            <li><a href="/lab9">🔬 Лабораторная работа 9</a></li>
+                            <li><a href="/bank" style="background: linear-gradient(135deg, #4CAF50, #2E7D32); color: white;">🏦 РГЗ - Банковская система</a></li>
+                        </ul>
+                    </nav>
+                    
+                    <div class="main-content">
+                        <h2>🚀 О проекте</h2>
+                        <p>Данный проект представляет собой сборник лабораторных работ по дисциплине "WEB-программирование, часть 2".</p>
+                        
+                        <div class="highlight">
+                            🎯 <strong>РГЗ - Банковская система</strong> - полнофункциональное веб-приложение с авторизацией, 
+                            переводами между пользователями и админ-панелью.
+                        </div>
+                        
+                        <h3>📋 Основные возможности банковской системы:</h3>
+                        <ul style="margin-left: 2rem; margin-top: 1rem;">
+                            <li>🔐 Два типа пользователей: клиенты и менеджеры</li>
+                            <li>💳 Переводы денег между пользователями</li>
+                            <li>📊 Просмотр истории операций</li>
+                            <li>👥 Управление пользователями (для менеджеров)</li>
+                            <li>✅ Валидация всех входных данных</li>
+                            <li>🔒 Безопасное хранение паролей</li>
+                        </ul>
+                        
+                        <h3 style="margin-top: 2rem;">🧪 Тестовые данные для входа:</h3>
+                        <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                            <p><strong>👨‍💼 Менеджер:</strong> логин: <code>admin</code>, пароль: <code>admin123</code></p>
+                            <p><strong>👤 Клиент:</strong> логин: <code>client1</code>, пароль: <code>123456</code></p>
+                            <p><small>Всего создано 10 клиентов (client1...client10) и 2 менеджера</small></p>
+                        </div>
+                    </div>
                 </div>
-                <div class="info-item">
+                
+                <footer>
+                    <div class="container">
+                        <div class="footer-content">
+                            <div class="footer-section">
+                                <h3>👨‍🎓 Студент</h3>
+                                <p><strong>ФИО:</strong> Сопова Виктория Андреевна</p>
+                                <p><strong>Группа:</strong> ФБИ-31</p>
+                                <p><strong>Курс:</strong> 3</p>
+                            </div>
+                            
+                            <div class="footer-section">
+                                <h3>📅 Год выполнения</h3>
+                                <p>2025 год</p>
+                                <p>Веб-программирование, часть 2</p>
+                            </div>
+                            
+                            <div class="footer-section">
+                                <h3>🔗 Быстрые ссылки</h3>
+                                <p><a href="/bank" style="color: #4CAF50;">🏦 Перейти в банковскую систему</a></p>
+                                <p><a href="/lab5" style="color: white;">🔬 Лабораторная работа 5</a></p>
+                                <p><a href="/lab9" style="color: white;">🔬 Лабораторная работа 9</a></p>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                            <p>© 2025 | Все лабораторные работы выполнены в рамках учебного курса</p>
+                        </div>
+                    </div>
+                </footer>
             </body>
-        </html> 
-        """, 404
+        </html>
+    """ 
 
+# ========== РЕДИРЕКТ НА БАНК ==========
+@app.route("/bank")
+def bank_redirect():
+    return redirect('/bank/')
+
+# ========== РЕДИРЕКТЫ ДЛЯ НЕДОСТУПНЫХ ЛАБОРАТОРНЫХ ==========
+@app.route("/lab1")
+@app.route("/lab2")
+@app.route("/lab3")
+@app.route("/lab4")
+@app.route("/lab6")
+@app.route("/lab7")
+@app.route("/lab8")
+def lab_redirect():
+    return redirect('/')
+
+# ========== ОБРАБОТЧИКИ ОШИБОК ==========
+@app.errorhandler(404)
+def not_found(err):
+    return """
+        <!doctype html>
+        <html>
+            <head>
+                <title>404 - Страница не найдена</title>
+                <style>
+                    body { font-family: Arial; text-align: center; padding: 50px; }
+                    h1 { color: #d9534f; }
+                    .info { margin: 20px 0; }
+                </style>
+            </head>
+            <body>
+                <h1>404 - Страница не найдена</h1>
+                <div class="info">К сожалению, запрашиваемая страница не существует.</div>
+                <a href="/">Вернуться на главную</a><br>
+                <a href="/bank">Перейти в банковскую систему</a>
+            </body>
+        </html>
+        """, 404
 
 @app.errorhandler(500)
 def internal_server_error(error):
@@ -156,103 +306,34 @@ def internal_server_error(error):
             <head>
                 <title>500 - Ошибка сервера</title>
                 <style>
-                    body {
-                        font-family: 'Arial', sans-serif;
-                        margin: 0;
-                        padding: 0;
-                        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-                        color: white;
-                        min-height: 100vh;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
+                    body { 
+                        font-family: Arial; 
+                        text-align: center; 
+                        padding: 50px; 
+                        background: #f8d7da;
                     }
-                    .container {
-                        text-align: center;
-                        background: rgba(255, 255, 255, 0.1);
-                        padding: 50px;
-                        border-radius: 20px;
-                        backdrop-filter: blur(10px);
-                        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-                        max-width: 600px;
-                    }
-                    .error-code {
-                        font-size: 120px;
-                        font-weight: bold;
-                        margin: 0;
-                        text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
-                    }
-                    .error-title {
-                        font-size: 36px;
-                        margin: 20px 0;
-                        color: #fff;
-                    }
-                    .error-message {
-                        font-size: 18px;
-                        margin: 20px 0;
-                        line-height: 1.6;
-                        color: #ffeaea;
-                    }
-                    .warning-icon {
-                        font-size: 80px;
-                        margin: 30px 0;
-                        display: block;
-                    }
-                    .btn {
-                        display: inline-block;
-                        background: white;
-                        color: #ff6b6b;
-                        padding: 12px 30px;
-                        text-decoration: none;
-                        border-radius: 50px;
-                        margin: 10px;
-                        font-weight: bold;
-                        transition: all 0.3s ease;
-                        border: 2px solid white;
-                    }
-                    .btn:hover {
-                        background: transparent;
-                        color: white;
-                        transform: translateY(-3px);
-                    }
-                    .technical-info {
-                        background: rgba(255, 255, 255, 0.1);
-                        padding: 20px;
+                    h1 { color: #721c24; }
+                    .error-container { 
+                        background: white; 
+                        padding: 30px; 
                         border-radius: 10px;
-                        margin: 30px 0;
-                        text-align: left;
-                        font-size: 14px;
+                        max-width: 600px;
+                        margin: 0 auto;
                     }
                 </style>
             </head>
             <body>
-                <div class="container">
-                    <div class="warning-icon">⚠️</div>
-                    <h1 class="error-code">500</h1>
-                    <h2 class="error-title">Внутренняя ошибка сервера</h2>
-                    
-                    <div class="error-message">
-                        <p>На сервере произошла непредвиденная ошибка.</p>
-                        <p>Мы уже работаем над устранением проблемы. Пожалуйста, попробуйте позже.</p>
-                    </div>
-
-                    <div class="technical-info">
-                        <h3>Техническая информация:</h3>
-                        <p>• Произошла внутренняя ошибка приложения</p>
-                        <p>• Сервер не смог обработать запрос</p>
-                        <p>• Администратор уведомлен о проблеме</p>
-                    </div>
-
-                    <div>
-                        <a href="/" class="btn">🏠 На главную страницу</a>
-                        <a href="javascript:history.back()" class="btn">↩️ Вернуться назад</a>
-                    </div>
-
-                    <div style="margin-top: 30px; font-size: 14px; color: #ffd1d1;">
-                        <p>Приносим извинения за временные неудобства</p>
-                    </div>
+                <div class="error-container">
+                    <h1>500 - Внутренняя ошибка сервера</h1>
+                    <p>На сервере произошла непредвиденная ошибка.</p>
+                    <p>Мы уже работаем над устранением проблемы.</p>
+                    <a href="/">Вернуться на главную</a><br>
+                    <a href="/bank">Перейти в банковскую систему</a>
                 </div>
             </body>
         </html>
         """, 500
 
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)

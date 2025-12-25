@@ -1,0 +1,176 @@
+{% extends "base1.html" %}
+
+{% block title %}Панель управления менеджера{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <!-- Карточка баланса менеджера -->
+    <div class="balance-card manager">
+        <h2 id="balance">{{ "%.2f"|format(user.balance) }} ₽</h2>
+        <p>Баланс менеджера</p>
+        <p style="margin-top: 10px; font-size: 0.9rem;">
+            Номер счета: <strong>{{ user.account_number }}</strong> | 👨‍💼 Менеджер
+        </p>
+    </div>
+    
+    <!-- Информация о менеджере -->
+    <div class="grid">
+        <div class="card">
+            <h3>👨‍💼 Информация менеджера</h3>
+            <p><strong>ФИО:</strong> {{ user.full_name }}</p>
+            <p><strong>Логин:</strong> {{ user.login }}</p>
+            <p><strong>Телефон:</strong> {{ user.phone or 'Не указан' }}</p>
+            <p><strong>Статус:</strong> <span style="color: #007bff; font-weight: bold;">Менеджер</span></p>
+        </div>
+        
+        <div class="card">
+            <h3>⚙️ Управление системой</h3>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-primary" onclick="loadUsers()">
+                    👥 Все пользователи
+                </button>
+                <button class="btn btn-success" onclick="showCreateUserForm()">
+                    ➕ Создать пользователя
+                </button>
+                <button class="btn btn-secondary" onclick="loadHistory()">
+                    📊 История операций
+                </button>
+                <button class="btn btn-primary" onclick="showTransferForm()">
+                    💸 Перевод денег
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Форма создания пользователя -->
+    <div id="createUserForm" class="form-section hidden">
+        <h3>👤 Создание нового пользователя</h3>
+        <form id="createUserFormElement">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>ФИО *:</label>
+                    <input type="text" name="full_name" required 
+                           placeholder="Иванов Иван Иванович">
+                </div>
+                
+                <div class="form-group">
+                    <label>Логин *:</label>
+                    <input type="text" name="login" required 
+                           placeholder="Латинские буквы и цифры">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Пароль *:</label>
+                    <input type="password" name="password" required 
+                           placeholder="Минимум 6 символов">
+                </div>
+                
+                <div class="form-group">
+                    <label>Телефон:</label>
+                    <input type="text" name="phone" 
+                           placeholder="+79991234567">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="is_manager">
+                    Создать как менеджера (будет доступ к управлению)
+                </label>
+                <small style="display: block; margin-top: 5px; color: #666;">
+                    Менеджерам начисляется 50,000 ₽, клиентам - 1,000 ₽
+                </small>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn btn-success">
+                    Создать пользователя
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="hideCreateUserForm()">
+                    Отмена
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Список пользователей -->
+    <div id="usersSection" class="form-section hidden">
+        <h3>👥 Управление пользователями</h3>
+        <div id="usersList">
+            <!-- Список пользователей будет загружен здесь -->
+        </div>
+    </div>
+    
+    <!-- Форма перевода (доступна и менеджерам) -->
+    <div id="transferForm" class="form-section hidden">
+        <h3>💰 Перевод денег</h3>
+        <form id="transferFormElement">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Получатель:</label>
+                    <input type="text" id="recipient" 
+                           placeholder="Номер счета или телефон" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Сумма (₽):</label>
+                    <input type="number" id="amount" min="0.01" step="0.01" 
+                           placeholder="0.00" required>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn btn-success">
+                    Выполнить перевод
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="hideTransferForm()">
+                    Отмена
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- История операций -->
+    <div id="historySection" class="form-section hidden">
+        <h3>📈 История операций</h3>
+        <div id="historyList">
+            <!-- История будет загружена здесь -->
+        </div>
+        <button class="btn btn-secondary" onclick="hideHistory()" style="margin-top: 15px;">
+            Закрыть историю
+        </button>
+    </div>
+    
+    <!-- Статистика системы -->
+    <div class="grid" style="margin-top: 2rem;">
+        <div class="card">
+            <h3>📊 Статистика системы</h3>
+            <p>👤 Всего пользователей: <strong>12</strong></p>
+            <p>👨‍💼 Менеджеров: <strong>2</strong></p>
+            <p>👤 Клиентов: <strong>10</strong></p>
+            <p>💳 Начальный баланс клиента: <strong>1,000 ₽</strong></p>
+            <p>💰 Начальный баланс менеджера: <strong>50,000 ₽</strong></p>
+        </div>
+        
+        <div class="card">
+            <h3>🔐 Права доступа</h3>
+            <p><strong>Клиент может:</strong></p>
+            <ul style="margin-left: 20px;">
+                <li>Просматривать свой баланс</li>
+                <li>Переводить деньги другим пользователям</li>
+                <li>Просматривать историю операций</li>
+            </ul>
+            
+            <p><strong>Менеджер может:</strong></p>
+            <ul style="margin-left: 20px;">
+                <li>Все возможности клиента</li>
+                <li>Создавать новых пользователей</li>
+                <li>Удалять существующих пользователей</li>
+                <li>Просматривать всех пользователей системы</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

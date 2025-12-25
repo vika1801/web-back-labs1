@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Банковская система - {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏦</text></svg>">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🏦 Банковская система</h1>
+            <div id="user-info">
+                <span style="color: #1e3c72; font-weight: 500;">Сопова Виктория, ФБИ-31</span>
+                
+                {% if session.get('user_id') %}
+                    <a href="{{ url_for('bank.dashboard') }}" class="btn btn-primary">🏠 Главная</a>
+                    
+                    {% if session.get('is_manager') %}
+                        <a href="#" onclick="loadUsers()" class="btn btn-secondary">👥 Пользователи</a>
+                        <a href="#" onclick="showCreateUserForm()" class="btn btn-success">➕ Создать</a>
+                    {% endif %}
+                    
+                    <a href="{{ url_for('bank.logout') }}" class="btn btn-danger">🚪 Выход</a>
+                    
+                {% else %}
+                    <a href="{{ url_for('bank.login_page') }}" class="btn btn-primary">🔐 Вход в систему</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>
